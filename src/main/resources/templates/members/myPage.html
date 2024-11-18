@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html xmlns:th="http://thymeleaf.org">
+<link rel="stylesheet" th:href="@{/css/normal.css}">
+<head>
+    <meta charset="UTF-8">
+    <script src="http://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script th:src="@{/js/logout.js}"></script>
+</head>
+<body>
+<div class="include_wrap" data-include-path="header.html"></div>
+<div th:if="${member != null}">
+    <input type="hidden" id="loginUser" th:value="${member.getUserId()}"></div>
+</div>
+<h1 style="text-align:center;">회원 정보</h1>
+<div class="updateMemberForm">
+    <div class="updateMemberId">
+        <label>아이디</label>
+        <input type="text" id="userId" name="userId" th:value="${member.getUserId()}" readonly>
+    </div>
+    <div class="updateMemberPwd">
+        <label>비밀번호</label>
+        <input type="password" id="userPw" name="userPw" th:value="${member.getUserPw()}">
+    </div>
+    <div class="updateMemberPwd_error">
+        <span class="error_next_box" id="pwMsg" style="display:none" aria-live="assertive">영문, 숫자, 특수문자를 포함한 8~16문자</span>
+    </div>
+    <div class="updateMemberName">
+        <label>이름</label>
+        <input type="text" id="name" name="name" th:value="${member.getName()}">
+    </div>
+    <div class="updateMemberName_error">
+        <span class="error_next_box" id="nameMsg" style="display:none" aria-live="assertive">한글 2글자 이상</span>
+    </div>
+    <div class="updateMemberBtn">
+        <button id="btn-update" class="btn btn-dark" onclick="update()">정보수정하기</button>
+        <a th:href="@{/boards(searchTarget=targetUser, user=${member.getUserId()}, hint, title)}">내 글 찾기</a>
+    </div>
+</div>
+</body>
+</html>
+<script>
+    function includeHtml() {
+        var allElements = $(".include_wrap");
+        Array.prototype.forEach.call(allElements, function(el) {
+            var includePath = el.dataset.includePath;
+
+            if (includePath) {
+                var xhttp = new XMLHttpRequest();
+                xhttp.onreadystatechange = function () {
+                    if (this.readyState == 4 && this.status == 200) {
+                        el.outerHTML = this.responseText;
+                    }
+                };
+                xhttp.open('GET', includePath, false);
+                xhttp.send();
+            }
+        });
+    }
+
+    $(document).ready(function() {
+	    includeHtml();
+	    var loginUser = document.getElementById('loginUser');
+	    if (loginUser != null) $('#login').hide();
+	    else $('#logout').hide();
+	});
+
+    var pwFlag = false;
+    var submitFlag = false;
+    var nameFlag = false;
+
+    function setFocusToInputObject(obj) {
+        if(submitFlag) {
+            submitFlag = false;
+            obj.focus();
+        }
+    }
+
+    function showErrorMsg(obj, msg) {
+        obj.attr("class", "error_next_box");
+        obj.html(msg);
+        obj.show();
+    }
+
+    function showSuccessMsg(obj, msg) {
+        obj.attr("class", "error_next_box green");
+        obj.html(msg);
+        obj.show();
+    }
+
+    $("#userPw").blur(function() {
+        pwFlag = false;
+        checkPw();
+    });
+
+    function checkPw() {
+        if(pwFlag) return true;
+
+        var pw = $("#userPw").val();
+        var oMsg = $("#pwMsg");
+        var oInput = $("#userPw");
+
+        if (pw == "") {
+            showErrorMsg(oMsg, "필수 정보입니다.");
+            setFocusToInputObject(oInput);
+            return false;
+        }
+        var pwReg = /^(?=.*[a-zA-z])(?=.*[0-9])(?=.*[$`~!@$!%*#^?&\\(\\)\-_=+]).{8,16}$/;
+        if (!pwReg.test(pw)) {
+            showErrorMsg(oMsg, "영문자, 숫자, 특수문자를 포함한 8~16자");
+            setFocusToInputObject(oInput);
+            return false;
+        } else {
+            pwFlag = true;
+            showSuccessMsg(oMsg, "적합한 비밀번호");
+        }
+    }
+
+    $("#name").blur(function() {
+        nameFlag = false;
+        checkName();
+    });
+
+    function checkName() {
+        if(nameFlag) return true;
+
+        var name = $("#name").val();
+        var oMsg = $("#nameMsg");
+        var oInput = $("#name");
+
+        if (name == "") {
+            showErrorMsg(oMsg, "필수 정보입니다.");
+            setFocusToInputObject(oInput);
+            return false;
+        }
+
+        var nameReg = /^[ㄱ-ㅎ|가-힣]{2,6}$/;
+
+        if (!nameReg.test(name)) {
+            showErrorMsg(oMsg, "한글 2~6자를 입력하세요.");
+            setFocusToInputObject(oInput);
+            return false;
+        } else {
+            console.log(name);
+            showSuccessMsg(oMsg, "적합한 이름");
+            nameFlag = true;
+            return true;
+        }
+    }
+
+    function update() {
+        let data = {
+            userId : $("#userId").val(),
+            userPw : $("#userPw").val(),
+            name : $("#name").val()
+        };
+        $.ajax({
+            type:"PUT",
+            url:"/userInfo",
+            data: JSON.stringify(data),
+            contentType: 'application/json; charset=utf-8',
+			dataType: "json"
+        }).done(function(rest) {
+            alert("회원 수정 완료");
+            location.href = "/"
+        }).fail(function(error){
+            alert(JSON.stringify(error))
+        })
+    }
+
+    const btn = document.getElementById('userId');
+    btn.addEventListener('click', function() {
+        alert('아이디를 바꾸실 수 없습니다.');
+    })
+</script>

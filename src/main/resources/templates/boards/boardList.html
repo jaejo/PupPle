@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html xmlns:th="http://thymeleaf.org">
+<link rel="stylesheet" th:href="@{/css/normal.css}">
+<head>
+    <script src="http://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script th:src="@{/js/logout.js}"></script>
+    <meta charset="UTF-8">
+</head>
+<body>
+<div class="include_wrap" data-include-path="header.html"></div>
+<div th:if="${member != null}">
+    <input type="hidden" id="loginUser" th:value="${member.getUserId()}"></div>
+</div>
+<input type="hidden" name="member" th:value="${member}">
+<table style="border:1px solid black;margin-left:auto;margin-right:auto;">
+    <thead>
+        <tr>
+            <th>번호</th>
+            <th>제목</th>
+            <th>작성자</th>
+            <th>추천수</th>
+            <th>작성일자</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr th:each="board, stat : ${boards}" th:onclick="|location.href='@{detail(no=${board.no})}'|">
+            <td th:text="${pageDto.totalCount - (((pageDto.page - 1) * pageDto.rowPerPage) + stat.index)}"></td>
+<!--            정방향-->
+<!--            <td th:text="${stat.count + (pageDto.rowPerPage * (pageDto.page - 1))}"></td>-->
+            <td th:text="${board.title}"></td>
+<!--            <td th:text="${board.content}"></td>-->
+            <td th:text="${board.member.userId}"></td>
+            <td th:text="${board.recommend}"></td>
+            <td th:text="${#temporals.format(board.createdAt, 'yyyy-MM-dd HH:mm')}"></td>
+        </tr>
+    </tbody>
+</table>
+<!--페이징 처리-->
+<div class="paging" th:if="!${#lists.isEmpty(boards)}">
+    <
+    <a th:if="${pageDto.startPage != 1}" th:href="@{/boards(page=${pageDto.startPage - 1})}">$lt;</a>
+
+    <th:block th:each="page : ${#numbers.sequence(pageDto.startPage, pageDto.endPage)}">
+        <a th:if="${pageDto.page == page}" th:href="@{/boards(page=${page})}"><b>[[${page}]]</b></a>
+        <a th:unless="${pageDto.page == page}" th:href="@{/boards(page=${page})}">[[${page}]]</a>
+    </th:block>
+
+    <a th:if="${pageDto.endPage != pageDto.lastPage}" th:href="@{/boards(page=${pageDto.endPage + 1})}"></a>
+    >
+</div>
+<div class="createBtn">
+    <button class="create_btn" onclick="checkLogin()">글쓰기</a></button>
+</div>
+<div class="search">
+<!--    <form name="searchForm" th:action="@{/boards?hintUser=${user}&hintContent=${hint}&hintTitle=${title}}" method="get">-->
+    <form name="searchForm" th:action="@{/boards?${user}&${hint}&${title}}" method="get">
+        <div class="search_child">
+            <div>
+<!--                select 태그에 name을 지정하면 폼 데이터 참조-->
+                <select id="searchTarget" name="searchTarget" onchange="selectTarget(this.value)">
+                    <option value="targetNull">검색대상을 고르세요.</option>
+                    <option value="targetUser">유저</option>
+                    <option value="targetTitle">제목</option>
+                    <option value="targetContent">내용</option>
+                    <option value="targetRecommend">추천순</option>
+                </select>
+            </div>
+            <div class="UserSearch" id="UserSearch">
+                <input type="text" th:name="user" placeholder="찾고 싶은 유저 아이디를 입력하세요.">
+            </div>
+            <div class="ContentSearch" id="ContentSearch">
+                <input type="text" th:name="hint" placeholder="찾고 싶은 내용을 입력하세요.">
+            </div>
+            <div class="TitleSearch" id="TitleSearch">
+                <input type="text" th:name="title" placeholder="찾고 싶은 제목을 입력하세요.">
+            </div>
+            <div class="search_btn">
+                <button type="submit">검색하기</button>
+            </div>
+        </div>
+    </form>
+</div>
+</body>
+</html>
+<script>
+    function includeHtml() {
+        var allElements = $(".include_wrap");
+        Array.prototype.forEach.call(allElements, function(el) {
+            var includePath = el.dataset.includePath;
+
+            if (includePath) {
+                var xhttp = new XMLHttpRequest();
+                xhttp.onreadystatechange = function () {
+                    if (this.readyState == 4 && this.status == 200) {
+                        el.outerHTML = this.responseText;
+                    }
+                };
+                xhttp.open('GET', includePath, false);
+                xhttp.send();
+            }
+        });
+    }
+
+    $(document).ready(function() {
+	    includeHtml();
+	    var loginUser = document.getElementById('loginUser');
+	    if (loginUser != null) $('#login').hide();
+	    else $('#logout').hide();
+	});
+
+    $("#ContentSearch").hide();
+    $("#TitleSearch").hide();
+    $("#UserSearch").hide();
+
+    function selectTarget(obj) {
+        if (obj == "targetContent") {
+            $("#UserSearch").hide();
+            $("#TitleSearch").hide();
+            $("#ContentSearch").show();
+
+        } else if(obj == "targetUser") {
+            $("#ContentSearch").hide();
+            $("#TitleSearch").hide();
+            $("#UserSearch").show();
+        }
+        else if(obj == "targetTitle") {
+            $("#ContentSearch").hide();
+            $("#UserSearch").hide();
+            $("#TitleSearch").show();
+        }
+        else {
+            $("#ContentSearch").hide();
+            $("#UserSearch").hide();
+            $("#TitleSearch").hide();
+        }
+    }
+
+    function checkLogin() {
+        location.replace("/newBoard");
+    }
+</script>

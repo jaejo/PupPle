@@ -1,0 +1,474 @@
+/* 폰트 시작 */
+@import url('https://fonts.googleapis.com/css2?family=Ubuntu&display=swap');
+
+html {
+  font-family: 'Ubuntu', sans-serif;
+}
+/* 폰트 끝 */
+.top {
+    margin : 0 auto;
+    width : 85%;
+    height : 60px;
+    display : flex;
+    /* 바깥 div에 설정 */
+    justify-content : space-between;
+    align-items: center;
+}
+
+/* 노멀라이즈 시작 */
+body, ul, li {
+  margin: 0;
+  padding: 0;
+  list-style: none;		/* 해당 태그의 list-style을 none으로 하는 것으로 ●을 제거한다 */
+}
+
+body {
+  background-color: #bababa;
+}
+
+a {
+  color: inherit;		/* 부모 엘리먼트의 값을 물려받는다 */
+  text-decoration: none;	/* 해당 태그의 text-decoration을 none으로 하는 것으로 밑줄을 제거한다 */
+}
+/* 노멀라이즈 끝 */
+
+/* 커스텀 시작 */
+
+/*
+:root {
+  --site-width: 500px;
+}
+
+.con-min-width {
+  min-width: var(--site-width);
+}
+
+.top-bar > .top {
+  width: var(--site-width);
+}
+*/
+/* 드롭다운 메뉴 시작 */
+
+.top-bar__menu-box-1 {
+    padding-bottom : 10px;
+}
+
+.top-bar__menu-box-1 > ul ul {
+  display: none;
+}
+
+.top-bar__menu-box-1 > ul > li {
+  display: inline-block;
+}
+
+.top-bar__menu-box-1 {
+  text-align: center;
+  margin-top: 25px;
+}
+
+.top-bar__menu-box-1 ul {
+  background-color: darkslateblue;
+  color: azure;
+  font-weight : bold;
+}
+
+.top-bar__menu-box-1 ul > li > a {
+  display: block;
+  font-size: 1rem;
+  padding: 10px 50px;
+}
+
+.top-bar__menu-box-1 ul > li:hover > a {
+  background-color: #555;
+}
+
+.top-bar__menu-box-1 > ul > li {
+  position: relative;
+}
+
+.top-bar__menu-box-1 > ul > li > ul {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 100%;
+}
+
+.top-bar__menu-box-1 > ul > li:hover > ul {
+  display: block;
+}
+
+.top-bar__menu-box-1 > ul {
+  border-radius: 15px;
+  width: 85%;
+  margin: 0 auto;
+}
+/* 드롭다운 메뉴 끝 */
+
+/* 커스텀 끝 */
+.error_next_box {
+  margin-top: 9px;
+  font-size: 12px;
+  color: red;
+  display: none;
+}
+
+.green {
+    color: #08a600!important
+}
+
+.memberList_btn {
+    visibility : hidden;
+}
+
+td {
+    width: 200px;
+
+}
+
+th {
+    text-align: left;
+}
+
+table { border-collapse: collapse; }
+
+tr {
+    border-bottom : 1px solid;
+}
+
+.paging {
+    font-family: arial;
+    font-size: 25px;
+    width: 75%;
+    margin: 0 auto;
+    display: block;
+    text-align : center;
+}
+
+b {
+    color: green;
+}
+
+/* boardDetail css */
+.createCommentItem {
+    margin: auto;
+    display: block;
+}
+
+.updateCommentText {
+    margin: auto;
+}
+.updateCommentText input {
+    width: 75%;
+    height: 30px;
+}
+.comment_label {
+    height : 40px;
+    width : 100px;
+    display : flex;
+    justify-content: center;
+    align-items : center;
+}
+
+.board_content {
+    width : 300px;
+    height : 100px;
+    margin : auto;
+}
+
+.ctrl_btn {
+    border : 1px solid black;
+    margin : 1px;
+    padding : 10px;
+    text-align: center;
+}
+
+.ctrl_btn_child {
+    display: inline-block;
+    width : 300px;
+}
+
+.createBtn {
+    width : 75%;
+    margin : 0 auto;
+    text-align : center;
+}
+
+.create_btn {
+    width: 100px;
+}
+.search {
+    border : 1px solid;
+    margin : 0 auto;
+    width : 75%;
+    margin-top : 5px;
+    margin-bottom : 5px;
+    padding : 10px;
+}
+
+.search_child {
+    display : flex;
+    /* 바깥 div에 설정 */
+    justify-content : center;
+    align-items: center;
+}
+
+.UserSearch input {
+    width : 400px;
+}
+
+.ContentSearch input {
+    width : 400px;
+}
+.TitleSearch input {
+    width : 400px;
+}
+
+.createCommentItem {
+    margin: auto;
+    display: block;
+}
+
+.updateCommentText {
+    margin: auto;
+}
+.updateCommentText input {
+    width: 75%;
+    height: 30px;
+}
+
+.good_content {
+    width : 75%;
+    height : 50px;
+    margin : 0 auto;
+    font-size : 20px;
+    font-weight : bold;
+}
+
+.good_content_child {
+    display : flex;
+    justify-content : space-between;
+    align-items: center;
+}
+
+.board_content {
+    border : 1px solid black;
+    width : 75%;
+    height : 300px;
+    margin : 0 auto;
+    margin-bottom : 10px;
+    text-align : center;
+    line-height : 70px;
+}
+.boardTitle {
+    display : flex;
+    justify-content: center;
+    align-items: center;
+}
+.boardTitle input {
+    width: 75%;
+    height: 30px;
+    padding-left : 20px;
+}
+.boardContent {
+    display : flex;
+    justify-content: center;
+    align-items : center;
+    height : 70%;
+}
+.boardContent textarea {
+    width: 75%;
+    height : 100%;
+    padding-left : 20px;
+}
+.ctrl_btn {
+    border : 1px solid black;
+    width : 75%;
+    padding : 10px;
+    text-align: center;
+    margin : 0 auto;
+}
+
+.ctrl_btn_child {
+    display: inline-block;
+    width : 300px;
+}
+
+/* 테이블 */
+td {
+    width: 200px;
+}
+th {
+    text-align: left;
+}
+table { border-collapse: collapse; }
+tr {
+    border-bottom : 1px solid;
+}
+.comment_label {
+  width : 75%;
+  margin : 0 auto;
+}
+.createCommentItemDetail {
+  width : 75%;
+  margin : 0 auto;
+}
+.createCommentItemDetail textarea {
+  width : 100%;
+  height : 100px;
+}
+.updateCommentText {
+  width : 75%;
+  margin : 0 auto;
+
+}
+.updateCommentText textarea {
+  width : 100%;
+  height : 100px;
+}
+.createReplyItem {
+  width : 75%;
+  margin : 0 auto;
+
+}
+.createReplyItem textarea {
+  width : 100%;
+  height : 100px;
+}
+.writeTitle {
+    width : 75%;
+    margin : 0 auto;
+}
+
+.write {
+    width : 75%;
+    margin : 0 auto;
+}
+
+.write input {
+    width : 100%;
+    height : 30px;
+}
+.write textarea {
+    width : 100%;
+    height : 300px;
+}
+
+/* updateBoard.html */
+.formDetail {
+    border: 1px solid;
+    width: 75%;
+    height: 425px;
+    margin: 0 auto;
+    line-height: 70px;
+}
+.button_area {
+    text-align: center;
+    padding: 10px;
+}
+
+.title_area {
+    display : flex;
+    justify-content : center;
+    align-items : center;
+}
+
+.content_area {
+    display : flex;
+    justify-content : center;
+    align-items : center;
+}
+
+.title_area input {
+    width : 75%;
+    height : 30px;
+}
+
+.content_area textarea {
+    width : 75%;
+    height : 300px;
+}
+
+/* checkLogin.html */
+.loginForm {
+    border : 1px solid;
+    width : 75%;
+    margin : 0 auto;
+    height : 210px;
+    line-height : 70px;
+}
+
+.loginId {
+    text-align : center;
+}
+
+.loginId label {
+    display: inline-block;
+    width : 100px;
+}
+
+.loginPwd {
+    text-align : center;
+}
+
+.loginPwd label {
+    display: inline-block;
+    width : 100px;
+}
+
+.error_msg {
+    text-align : center;
+    color : red;
+    height: 35px;
+}
+
+.loginButton {
+    text-align : center;
+}
+
+/* myPage */
+.updateMemberForm {
+    border : 1px solid;
+    width : 75%;
+    margin : 0 auto;
+    line-height : 40px;
+    height : 300px;
+}
+
+.updateMemberId {
+    text-align : center;
+}
+
+.updateMemberId label {
+    display: inline-block;
+    width : 100px;
+}
+
+.updateMemberPwd {
+    text-align : center;
+}
+
+.updateMemberPwd label {
+    display: inline-block;
+    width : 100px;
+}
+
+.updateMemberPwd_error {
+    text-align : center;
+}
+
+.updateMemberName {
+    text-align : center;
+}
+
+.updateMemberName label {
+    display: inline-block;
+    width : 100px;
+}
+
+.updateMemberName_error {
+    text-align : center;
+}
+
+.updateMemberBtn {
+    text-align : center;
+}

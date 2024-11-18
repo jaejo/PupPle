@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html xmlns:th="http://thymeleaf.org">
+<link rel="stylesheet" th:href="@{/css/normal.css}">
+<header class="top-bar con-min-width">
+    <div class="top">
+        <div class="logo">
+<!--            <a href="/"><h1 style="color : mediumorchid;">PupPle</h1></a>-->
+            <a href="/"><h1 style="color : #6667AB; font-weight : 900; font-size : 35px;">PupPle</h1></a>
+        </div>
+        <div class="loginState">
+            <a id='login' href="/login">로그인</a>
+            <button id='logout' onclick="logout()">로그아웃</button>
+        </div>
+    </div>
+
+    <nav class="top-bar__menu-box-1">
+        <ul>
+            <li>
+                <a href="boards">자유게시판</a>
+            </li>
+            <li>
+                <a href="#">추천게시판</a>
+            </li>
+            <li>
+                <a href="#">상품주문</a>
+            </li>
+            <li>
+                <a href="myPage">마이페이지</a>
+            </li>
+        </ul>
+  </nav>
+</header>
+</html>

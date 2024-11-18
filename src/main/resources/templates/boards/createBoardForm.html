@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html xmlns:th="http://thymeleaf.org">
+<link rel="stylesheet" th:href="@{/css/normal.css}">
+<head>
+    <meta charset="UTF-8">
+    <script src="http://code.jquery.com/jquery-3.5.1.min.js"></script>
+</head>
+<body>
+<div class="include_wrap" data-include-path="header.html"></div>
+<div th:if="${member != null}">
+    <input type="hidden" id="loginUser" th:value="${member.getUserId()}"></div>
+</div>
+<div class="writeTitle">
+    <h1>글쓰기</h1>
+</div>
+<div class="write">
+<!--    <form name="writeform" action="/new" method="post">-->
+    <input id="file" type="file" accept="image/*" multiple>
+    <output id="output"></output>
+    <p>
+        <label id="title_label">제목</label>
+    </p>
+    <p>
+        <input type="text" id="title" name="title" autocomplete="off" required>
+    </p>
+    <p>
+        <label id="content_label">내용</label>
+    </p>
+    <p>
+        <textarea id="content" name="content" autocomplete="off" required></textarea>
+    </p>
+        <button id="register_btn" onclick="upload()"><span>등록하기</span></button>
+<!--    </form>-->
+</div>
+<script th:src="@{/js/logout.js}"></script>
+</body>
+</html>
+<script>
+    function includeHtml() {
+        var allElements = $(".include_wrap");
+        Array.prototype.forEach.call(allElements, function(el) {
+            var includePath = el.dataset.includePath;
+
+            if (includePath) {
+                var xhttp = new XMLHttpRequest();
+                xhttp.onreadystatechange = function () {
+                    if (this.readyState == 4 && this.status == 200) {
+                        el.outerHTML = this.responseText;
+                    }
+                };
+                xhttp.open('GET', includePath, false);
+                xhttp.send();
+            }
+        });
+    }
+
+    $(document).ready(function() {
+        includeHtml();
+        var loginUser = document.getElementById('loginUser');
+        if (loginUser != null) $('#login').hide();
+        else $('#logout').hide();
+    });
+
+    document.getElementById('file').addEventListener('input', (event) => {
+        const files = event.target.files;
+        output.textContent = Array.from(files).map(file => file.name).join('\n');
+    })
+
+    function upload() {
+        let title = document.getElementById('title').value;
+        let content = document.getElementById('content').value;
+        let files = output.textContent;
+
+        // form data로 사진 저장
+        let form_data = new FormData();
+        form_data.append("files", files);
+        form_data.append("title", title);
+        form_data.append("content", content);
+
+        console.log(form_data);
+
+        $.ajax ({
+            type : "POST",
+            url : "/posting",
+            data : form_data,
+            cache : false,
+            contentType : false,
+            processData : false,
+            success : function (response) {
+                location.replace("/boards");
+            }
+        });
+    }
+</script>

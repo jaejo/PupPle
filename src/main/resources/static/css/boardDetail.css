@@ -1,0 +1,117 @@
+/* 폰트 */
+@import url('https://fonts.googleapis.com/css2?family=Ubuntu&display=swap');
+html {
+  font-family: 'Ubuntu', sans-serif;
+}
+
+body {
+  background-color: #bababa;
+}
+
+a {
+  color: inherit;		/* 부모 엘리먼트의 값을 물려받는다 */
+  text-decoration: none;	/* 해당 태그의 text-decoration을 none으로 하는 것으로 밑줄을 제거한다 */
+}
+
+.createCommentItem {
+    margin: auto;
+    display: block;
+}
+
+.updateCommentText {
+    margin: auto;
+}
+.updateCommentText input {
+    width: 75%;
+    height: 30px;
+}
+
+.good_content {
+    width : 75%;
+    margin : 0 auto;
+    margin-bottom : 10px;
+    font-size : 20px;
+    font-weight : bold;
+}
+
+.good_content_child {
+    display : flex;
+    justify-content : space-between;
+    align-items: center;
+}
+
+.board_content {
+    border : 1px solid black;
+    width : 75%;
+    height : 300px;
+    margin : 0 auto;
+    margin-bottom : 10px;
+    text-align : center;
+    line-height : 50px;
+}
+
+.boardTitle input {
+    width: 75%;
+    height: 30px;
+    padding-left : 20px;
+}
+.boardContent input {
+    width: 75%;
+    height: 230px;
+    padding-left : 20px;
+}
+.ctrl_btn {
+    border : 1px solid black;
+    width : 75%;
+    padding : 10px;
+    text-align: center;
+    margin : 0 auto;
+}
+
+.ctrl_btn_child {
+    display: inline-block;
+    width : 300px;
+    boarder : 1px solid black;
+}
+
+/* 테이블 */
+td {
+    width: 200px;
+}
+th {
+    text-align: left;
+}
+table { border-collapse: collapse; }
+tr {
+    border-bottom : 1px solid;
+}
+.comment_label {
+  width : 75%;
+  margin : 0 auto;
+}
+.createCommentItemDetail {
+  width : 75%;
+  margin : 0 auto;
+}
+.createCommentItemDetail textarea {
+  width : 100%;
+  height : 100px;
+}
+.updateCommentText {
+  width : 75%;
+  margin : 0 auto;
+
+}
+.updateCommentText textarea {
+  width : 100%;
+  height : 100px;
+}
+.createReplyItem {
+  width : 75%;
+  margin : 0 auto;
+
+}
+.createReplyItem textarea {
+  width : 100%;
+  height : 100px;
+}
