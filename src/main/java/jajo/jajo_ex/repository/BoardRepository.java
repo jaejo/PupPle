@@ -1,7 +1,9 @@
 package jajo.jajo_ex.repository;
 
 import jajo.jajo_ex.domain.Board;
+import jajo.jajo_ex.dto.BoardRequestDto;
 import jajo.jajo_ex.dto.PageDto;
+import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 

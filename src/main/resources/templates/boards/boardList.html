@@ -12,6 +12,7 @@
     <input type="hidden" id="loginUser" th:value="${member.getUserId()}"></div>
 </div>
 <input type="hidden" name="member" th:value="${member}">
+<div th:if="!${#lists.isEmpty(boards)}">
 <table style="border:1px solid black;margin-left:auto;margin-right:auto;">
     <thead>
         <tr>
@@ -49,7 +50,7 @@
     >
 </div>
 <div class="createBtn">
-    <button class="create_btn" onclick="checkLogin()">글쓰기</a></button>
+    <button class="create_btn" onclick="checkLogin()">글쓰기</button>
 </div>
 <div class="search">
 <!--    <form name="searchForm" th:action="@{/boards?hintUser=${user}&hintContent=${hint}&hintTitle=${title}}" method="get">-->
@@ -79,6 +80,13 @@
             </div>
         </div>
     </form>
+</div>
+</div>
+<div th:unless="!${#lists.isEmpty(boards)}">
+    <div class="noBoard">
+        <label>아직 글이 없어요</label>
+        <button class="create_btn" onclick="checkLogin()">글쓰기</button>
+    </div>
 </div>
 </body>
 </html>

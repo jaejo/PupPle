@@ -18,6 +18,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.imageio.ImageIO;
@@ -25,6 +26,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.text.DateFormat;
+import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -152,19 +154,22 @@ public class BoardController {
         return "redirect:/boards";
     }
 
-    @PostMapping("/posting")
-    @ResponseBody
-    @Transactional
-    public ResponseDto<?> post(@SessionAttribute(required=false, name="principal") Member principal, Model model,
-                               BoardForm form) {
-        if (principal != null) model.addAttribute("member", principal);
-
-        Member member = memberService.findById(principal);
-
+//    @PostMapping("/posting")
+//    @ResponseBody
+//    @Transactional
+//    public ResponseDto<?> post(@SessionAttribute(required=false, name="principal") Member principal, Model model,
+//                               BoardForm form) {
+//        if (principal != null) model.addAttribute("member", principal);
+//
+//        Member member = memberService.findById(principal);
+//
 //        ZonedDateTime zdateTime = ZonedDateTime.now();
 //        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 //        String formatedNow = zdateTime.format(formatter);
 //        String[] files = form.getFiles().split("\n");
+//        for (String file : files) {
+//            System.out.println(file);
+//        }
 //        for (int i = 0; i < files.length; i++) {
 //            try {
 //                BufferedImage image = new BufferedImage(300, 300, BufferedImage.TYPE_INT_RGB);
@@ -174,16 +179,16 @@ public class BoardController {
 //                System.out.println("이미지 저장 중 오류 발생");
 //            }
 //        }
-
-
-        Board board = Board.builder()
-                .member(member)
-                .title(form.getTitle())
-                .content(form.getContent())
-                .files(form.getFiles())
-                .build();
-        boardService.save(board);
-
-        return ResponseDto.success(1);
-    }
+//
+//
+//        Board board = Board.builder()
+//                .member(member)
+//                .title(form.getTitle())
+//                .content(form.getContent())
+//                .files(form.getFiles())
+//                .build();
+//        boardService.save(board);
+//
+//        return ResponseDto.success(1);
+//    }
 }

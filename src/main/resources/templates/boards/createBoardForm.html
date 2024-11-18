@@ -15,8 +15,9 @@
 </div>
 <div class="write">
 <!--    <form name="writeform" action="/new" method="post">-->
-    <input id="file" type="file" accept="image/*" multiple>
-    <output id="output"></output>
+<!--    <input id="file" type="file" accept="image/*" multiple>-->
+<!--    <output id="output"></output>-->
+    <div class="inputBox"><h3>file :</h3><input type="file" name="files" multiple></div>
     <p>
         <label id="title_label">제목</label>
     </p>
@@ -63,6 +64,7 @@
 
     document.getElementById('file').addEventListener('input', (event) => {
         const files = event.target.files;
+        console.log(files);
         output.textContent = Array.from(files).map(file => file.name).join('\n');
     })
 

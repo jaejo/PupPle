@@ -1,6 +1,7 @@
 package jajo.jajo_ex.repository;
 
 import jajo.jajo_ex.domain.Board;
+import jajo.jajo_ex.dto.BoardRequestDto;
 import jajo.jajo_ex.dto.PageDto;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.Query;

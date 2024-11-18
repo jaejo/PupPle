@@ -6,11 +6,13 @@ import jajo.jajo_ex.dto.CommentRequestDto;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
 @Builder
 @Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
@@ -29,59 +31,10 @@ public class Board extends Timestamped {
     private String title;
     private String content;
     private int recommend;
-    private String files;
 
     public void addComment(Comment comment) {
         this.comments.add(comment);
         comment.setBoard(this);
-    }
-
-    public Long getNo() {
-        return no;
-    }
-
-    public void setNo(Long no) {
-        this.no = no;
-    }
-
-    public Member getMember() {
-        return member;
-    }
-
-    public void setMember(Member member) {
-        this.member = member;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public String getContent() {
-        return content;
-    }
-
-    public void setContent(String content) {
-        this.content = content;
-    }
-
-    public int getRecommend() {
-        return recommend;
-    }
-
-    public void setRecommend(int recommend) {
-        this.recommend = recommend;
-    }
-
-    public List<Comment> getComments() {
-        return comments;
-    }
-
-    public void setComments(List<Comment> comments) {
-        this.comments = comments;
     }
 
     public void update(BoardRequestDto boardRequestDto) {
@@ -97,11 +50,4 @@ public class Board extends Timestamped {
         this.recommend = boardRequestDto.getRecommend() + 1;
     }
 
-    public String getFiles() {
-        return files;
-    }
-
-    public void setFiles(String files) {
-        this.files = files;
-    }
 }
