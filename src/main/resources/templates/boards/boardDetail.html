@@ -9,38 +9,38 @@
 </head>
 <body>
 <div class="include_wrap" data-include-path="header.html"></div>
-<form th:action="@{/updateBoard(no=${board.getNo()},title=${board.getTitle()},content=${board.getContent()})}" method="post">
-    <div class="good_content">
-        <div class="good_content_child">
-            <div class="good_content_user">
-                <label>작성자: </label>
-                <label th:text="${board.member.getUserId()}"></label>
+    <form th:action="@{/updateBoard(no=${board.getNo()},title=${board.getTitle()},content=${board.getContent()})}" method="post">
+        <div class="good_content">
+            <div class="good_content_child">
+                <div class="good_content_user">
+                    <label>작성자: </label>
+                    <label th:text="${board.member.getUserId()}"></label>
+                </div>
+                <div class="good_content_img">
+                    <label>좋아요: </label>
+                    <img th:src="@{image/pow.png}" alt="좋아요" height="30" width="30" th:onclick="good([[${board.getRecommend()}]])">
+                    <label th:text="${board.getRecommend()}"></label>
+                </div>
             </div>
-            <div class="good_content_img">
-                <label>좋아요: </label>
-                <img th:src="@{image/pow.png}" alt="좋아요" height="30" width="30" th:onclick="good([[${board.getRecommend()}]])">
-                <label th:text="${board.getRecommend()}"></label>
+        </div>
+        <div class="board_content">
+            <div class="boardTitle">
+                <label>제목</label>
+                <input type="text" th:value="${board.getTitle()}" readonly>
+            </div>
+            <div class="boardContent">
+                <label>내용</label>
+    <!--            <input type="text" th:value="${board.getContent()}" readonly>-->
+                <textarea th:text="${board.getContent()}" readonly></textarea>
             </div>
         </div>
-    </div>
-    <div class="board_content">
-        <div class="boardTitle">
-            <label>제목</label>
-            <input type="text" th:value="${board.getTitle()}" readonly>
+        <div class="ctrl_btn" id="ctrl_btn">
+            <div class="ctrl_btn_child">
+                <button id="modify_btn" type="submit">수정하기</button>
+                <button type="button" id="deleteFormAjax" onclick="deleteForm();">게시글 삭제</button>
+            </div>
         </div>
-        <div class="boardContent">
-            <label>내용</label>
-<!--            <input type="text" th:value="${board.getContent()}" readonly>-->
-            <textarea th:text="${board.getContent()}" readonly></textarea>
-        </div>
-    </div>
-    <div class="ctrl_btn" id="ctrl_btn">
-        <div class="ctrl_btn_child">
-            <button id="modify_btn" type="submit">수정하기</button>
-            <button id="deleteFormAjax" onclick="deleteForm();">게시글 삭제</button>
-        </div>
-    </div>
-</form>
+    </form>
 
 <input type="hidden" id="boardUser" th:value="${board.member.getUserId()}">
 <input type="hidden" id="boardNo" th:value="${board.getNo()}">
@@ -48,7 +48,7 @@
 <input type="hidden" id="loginId" th:value="${member.getId()}">
 
 <div class="comment" th:if="!${#lists.isEmpty(comments)}">
-    <div class="comment_label"><label><h2><댓글></h2></label></div>
+    <div class="comment_label"><label><h2>댓글</h2></label></div>
     <table style="border:1px solid black;margin-left:auto;margin-right:auto;">
         <thead>
         <tr>

@@ -161,28 +161,28 @@ public class BoardController {
 
         Member member = memberService.findById(principal);
 
-        ZonedDateTime zdateTime = ZonedDateTime.now();
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
-        String formatedNow = zdateTime.format(formatter);
-        String[] files = form.getFiles().split("\n");
-        for (int i = 0; i < files.length; i++) {
-            try {
-                BufferedImage image = new BufferedImage(300, 300, BufferedImage.TYPE_INT_RGB);
-                File file = new File("C:\\Users\\arki\\Desktop\\study\\jajo-ex\\build\\resources\\main\\static\\upload\\" + files[i]);
-                ImageIO.write(image, "jpg", file);
-            } catch (IOException e) {
-                System.out.println("이미지 저장 중 오류 발생");
-            }
-        }
+//        ZonedDateTime zdateTime = ZonedDateTime.now();
+//        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+//        String formatedNow = zdateTime.format(formatter);
+//        String[] files = form.getFiles().split("\n");
+//        for (int i = 0; i < files.length; i++) {
+//            try {
+//                BufferedImage image = new BufferedImage(300, 300, BufferedImage.TYPE_INT_RGB);
+//                File file = new File("C:\\Users\\arki\\Desktop\\study\\jajo-ex\\build\\resources\\main\\static\\upload\\" + files[i]);
+//                ImageIO.write(image, "jpg", file);
+//            } catch (IOException e) {
+//                System.out.println("이미지 저장 중 오류 발생");
+//            }
+//        }
 
-//
-//        Board board = Board.builder()
-//                .member(member)
-//                .title(form.getTitle())
-//                .content(form.getContent())
-//                .files(form.getFiles())
-//                .build();
-//        boardService.save(board);
+
+        Board board = Board.builder()
+                .member(member)
+                .title(form.getTitle())
+                .content(form.getContent())
+                .files(form.getFiles())
+                .build();
+        boardService.save(board);
 
         return ResponseDto.success(1);
     }

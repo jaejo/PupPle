@@ -7,6 +7,7 @@ import jajo.jajo_ex.dto.ResponseDto;
 import jajo.jajo_ex.service.BoardService;
 import jajo.jajo_ex.service.MemberService;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.ui.Model;

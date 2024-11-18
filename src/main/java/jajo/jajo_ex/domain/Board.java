@@ -23,7 +23,7 @@ public class Board extends Timestamped {
     private Member member;
 
     @Builder.Default
-    @OneToMany(fetch = FetchType.LAZY, mappedBy="board", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(fetch = FetchType.LAZY, mappedBy="board", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<Comment> comments = new ArrayList<Comment>();
 
     private String title;

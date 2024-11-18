@@ -24,11 +24,11 @@ public class Member {
     private String userPw;
 
     @Builder.Default
-    @OneToMany(mappedBy = "member")
+    @OneToMany(mappedBy = "member", cascade=CascadeType.REMOVE)
     private List<Board> boards = new ArrayList<Board>();
 
     @Builder.Default
-    @OneToMany(mappedBy = "member")
+    @OneToMany(mappedBy = "member", cascade=CascadeType.REMOVE)
     private List<Comment> comments = new ArrayList<Comment>();
 
     public void addBoard(Board board){

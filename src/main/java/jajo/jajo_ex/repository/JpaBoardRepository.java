@@ -55,9 +55,12 @@ public class JpaBoardRepository implements BoardRepository {
 
     @Override
     public void delete(Long no) {
-        String jpql = "delete from Board b where b.no =:no";
-        Query query = em.createQuery(jpql).setParameter("no", no);
-        query.executeUpdate();
+//        String jpql = "delete from Board b where b.no =:no";
+//        Query query = em.createQuery(jpql).setParameter("no", no);
+//        query.executeUpdate();
+        Board board = em.find(Board.class, no);
+        em.remove(board);
+        em.flush();
     }
 
     @Override
