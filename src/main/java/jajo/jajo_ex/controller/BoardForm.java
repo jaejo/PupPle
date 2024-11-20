@@ -11,5 +11,4 @@ public class BoardForm {
     private Long no;
     private String title;
     private String content;
-    private String files;
 }

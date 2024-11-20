@@ -14,24 +14,23 @@
     <h1>글쓰기</h1>
 </div>
 <div class="write">
-<!--    <form name="writeform" action="/new" method="post">-->
-<!--    <input id="file" type="file" accept="image/*" multiple>-->
-<!--    <output id="output"></output>-->
-    <div class="inputBox"><h3>file :</h3><input type="file" name="files" multiple></div>
-    <p>
-        <label id="title_label">제목</label>
-    </p>
-    <p>
-        <input type="text" id="title" name="title" autocomplete="off" required>
-    </p>
-    <p>
-        <label id="content_label">내용</label>
-    </p>
-    <p>
-        <textarea id="content" name="content" autocomplete="off" required></textarea>
-    </p>
-        <button id="register_btn" onclick="upload()"><span>등록하기</span></button>
-<!--    </form>-->
+    <form name="writeform" enctype="multipart/form-data" action="/posting" method="post">
+        <input id="file" type="file" name="file" accept="image/*" multiple>
+        <output id="output" name="output"></output>
+        <p>
+            <label id="title_label">제목</label>
+        </p>
+        <p>
+            <input type="text" id="title" name="title" autocomplete="off" required>
+        </p>
+        <p>
+            <label id="content_label">내용</label>
+        </p>
+        <p>
+            <textarea id="content" name="content" autocomplete="off" required></textarea>
+        </p>
+            <button id="register_btn"><span>등록하기</span></button>
+    </form>
 </div>
 <script th:src="@{/js/logout.js}"></script>
 </body>
@@ -64,33 +63,19 @@
 
     document.getElementById('file').addEventListener('input', (event) => {
         const files = event.target.files;
-        console.log(files);
         output.textContent = Array.from(files).map(file => file.name).join('\n');
     })
 
-    function upload() {
-        let title = document.getElementById('title').value;
-        let content = document.getElementById('content').value;
-        let files = output.textContent;
-
-        // form data로 사진 저장
-        let form_data = new FormData();
-        form_data.append("files", files);
-        form_data.append("title", title);
-        form_data.append("content", content);
-
-        console.log(form_data);
-
-        $.ajax ({
-            type : "POST",
-            url : "/posting",
-            data : form_data,
-            cache : false,
-            contentType : false,
-            processData : false,
-            success : function (response) {
-                location.replace("/boards");
-            }
-        });
-    }
+<!--    function upload() {-->
+<!--        let fileName = output.textContent;-->
+<!--        console.log(fileName);-->
+<!--        $.ajax ({-->
+<!--            type : "POST",-->
+<!--            url : "/posting",-->
+<!--            data : fileName,-->
+<!--            success : function (response) {-->
+<!--                location.replace("/boards");-->
+<!--            }-->
+<!--        });-->
+<!--    }-->
 </script>

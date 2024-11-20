@@ -1,32 +1,24 @@
 package jajo.jajo_ex.controller;
 
-import jajo.jajo_ex.SessionConst;
 import jajo.jajo_ex.domain.Board;
+import jajo.jajo_ex.domain.BoardFile;
 import jajo.jajo_ex.domain.Comment;
 import jajo.jajo_ex.domain.Member;
 import jajo.jajo_ex.dto.*;
-import jajo.jajo_ex.repository.BoardRepository;
-import jajo.jajo_ex.repository.MemberRepository;
+import jajo.jajo_ex.service.BoardFileService;
 import jajo.jajo_ex.service.BoardService;
 import jajo.jajo_ex.service.CommentService;
 import jajo.jajo_ex.service.MemberService;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpSession;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import javax.imageio.ImageIO;
-import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.text.DateFormat;
-import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -36,12 +28,14 @@ public class BoardController {
     private final BoardService boardService;
     private final MemberService memberService;
     private final CommentService commentService;
+    private final BoardFileService boardFileService;
 
     @Autowired
-    public BoardController(BoardService boardService, MemberService memberService, CommentService commentService) {
+    public BoardController(BoardService boardService, MemberService memberService, CommentService commentService, BoardFileService boardFileService) {
         this.boardService = boardService;
         this.memberService = memberService;
         this.commentService = commentService;
+        this.boardFileService = boardFileService;
     }
 
     @GetMapping("/newBoard")
@@ -49,33 +43,32 @@ public class BoardController {
         if (principal != null) model.addAttribute("member", principal);
         return "boards/createBoardForm";
     }
-    @PostMapping("/newBoard")
-    @Transactional
-    public String create(@SessionAttribute(required = false, name="principal") Member principal, BoardForm form, Model model) {
-        if (principal != null) model.addAttribute("member", principal);
-
-        Board board = new Board();
-
-        board.setTitle(form.getTitle());
-        board.setContent(form.getContent());
-
-        boardService.save(board);
-        Member member1 = memberService.findById(principal);
-
-        board.setMember(member1);
-        member1.getBoards().add(board);
-        memberService.join(member1);
-
-        return "redirect:/boards";
-
-    }
+//    @PostMapping("/newBoard")
+//    @Transactional
+//    public String create(@SessionAttribute(required = false, name="principal") Member principal, BoardForm form, Model model) {
+//        if (principal != null) model.addAttribute("member", principal);
+//
+//        Board board = new Board();
+//
+//        board.setTitle(form.getTitle());
+//        board.setContent(form.getContent());
+//
+//        boardService.save(board);
+//        Member member1 = memberService.findById(principal);
+//
+//        board.setMember(member1);
+//        member1.getBoards().add(board);
+//        memberService.join(member1);
+//
+//        return "redirect:/boards";
+//
+//    }
     @GetMapping("/boards")
     public String list(@SessionAttribute(required = false, name="principal") Member principal, Model model, PageDto pageDto,
                        @RequestParam(value="user", required = false) String user,
                        @RequestParam(value="hint", required = false) String hint,
                        @RequestParam(value="title", required = false) String title,
                        @RequestParam(value="searchTarget", required = false) String obj) {
-        System.out.println(user);
         if (principal != null) model.addAttribute("member", principal);
         if( (hint == null || hint.isEmpty())
                 && (user == null || user.isEmpty())
@@ -154,41 +147,44 @@ public class BoardController {
         return "redirect:/boards";
     }
 
-//    @PostMapping("/posting")
-//    @ResponseBody
-//    @Transactional
-//    public ResponseDto<?> post(@SessionAttribute(required=false, name="principal") Member principal, Model model,
-//                               BoardForm form) {
-//        if (principal != null) model.addAttribute("member", principal);
-//
-//        Member member = memberService.findById(principal);
-//
-//        ZonedDateTime zdateTime = ZonedDateTime.now();
-//        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
-//        String formatedNow = zdateTime.format(formatter);
-//        String[] files = form.getFiles().split("\n");
-//        for (String file : files) {
-//            System.out.println(file);
-//        }
-//        for (int i = 0; i < files.length; i++) {
-//            try {
-//                BufferedImage image = new BufferedImage(300, 300, BufferedImage.TYPE_INT_RGB);
-//                File file = new File("C:\\Users\\arki\\Desktop\\study\\jajo-ex\\build\\resources\\main\\static\\upload\\" + files[i]);
-//                ImageIO.write(image, "jpg", file);
-//            } catch (IOException e) {
-//                System.out.println("이미지 저장 중 오류 발생");
-//            }
-//        }
-//
-//
-//        Board board = Board.builder()
-//                .member(member)
-//                .title(form.getTitle())
-//                .content(form.getContent())
-//                .files(form.getFiles())
-//                .build();
-//        boardService.save(board);
-//
-//        return ResponseDto.success(1);
-//    }
+    @PostMapping("/posting")
+    @Transactional
+    public String post(@SessionAttribute(required=false, name="principal") Member principal, Model model,
+                               @RequestParam(name="file") MultipartFile[] file, BoardForm form) throws IOException {
+        if (principal != null) model.addAttribute("member", principal);
+        // 저장될 경로 지정
+        String FileDir = "C:\\Users\\LEEJAEJOON\\Documents\\PupPle\\src\\main\\resources\\static\\uploadImage\\";
+        Member member = memberService.findById(principal);
+//        중복 이미지 방지를 위해 현재 시간 추가
+        ZonedDateTime zdateTime = ZonedDateTime.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss");
+        String formatedNow = zdateTime.format(formatter);
+        String allFile = "";
+        for(MultipartFile f : file) {
+            String userFileName = f.getOriginalFilename();
+            String fileExtension = userFileName.substring(userFileName.lastIndexOf(".") + 1);
+            String uploadFileName = formatedNow + "_" + userFileName + "." + fileExtension;
+            allFile += uploadFileName + "\n";
+            File saveFile = new File(FileDir, uploadFileName);
+            f.transferTo(saveFile);
+        }
+
+        Board board = Board.builder()
+                .member(member)
+                .title(form.getTitle())
+                .content(form.getContent())
+                .build();
+
+        boardService.save(board);
+
+        BoardFile boardFile = BoardFile.builder()
+                .board(board)
+                .fileName(allFile)
+                .build();
+
+        boardFileService.save(boardFile);
+
+        model.addAttribute("boardFile", boardFile);
+        return "redirect:/boards";
+    }
 }

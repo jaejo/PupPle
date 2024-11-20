@@ -2,6 +2,7 @@ package jajo.jajo_ex;
 
 import jajo.jajo_ex.aop.TimeTraceAop;
 import jajo.jajo_ex.repository.*;
+import jajo.jajo_ex.service.BoardFileService;
 import jajo.jajo_ex.service.BoardService;
 import jajo.jajo_ex.service.CommentService;
 import jajo.jajo_ex.service.MemberService;
@@ -36,6 +37,8 @@ public class SpringConfig {
     @Bean
     public CommentService commentService() { return new CommentService(commentRepository());}
 
+    @Bean
+    public BoardFileService boardFileService() { return new BoardFileService(boardFileRepository());}
     //DeleteMapping 사용하기 위해
     @Bean
     public HiddenHttpMethodFilter hiddenHttpMethodFilter() {
@@ -59,4 +62,7 @@ public class SpringConfig {
 
     @Bean
     public CommentRepository commentRepository() { return new JpaCommentRepository(em); }
+
+    @Bean
+    public BoardFileRepository boardFileRepository() { return new JpaBoardFileRepository(em); }
 }

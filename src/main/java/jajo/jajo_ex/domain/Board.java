@@ -28,6 +28,10 @@ public class Board extends Timestamped {
     @OneToMany(fetch = FetchType.LAZY, mappedBy="board", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<Comment> comments = new ArrayList<Comment>();
 
+    @OneToMany(mappedBy = "board", cascade = CascadeType.REMOVE, orphanRemoval = true, fetch = FetchType.LAZY)
+    private List<BoardFile> boardFiles = new ArrayList<BoardFile>();
+
+
     private String title;
     private String content;
     private int recommend;
