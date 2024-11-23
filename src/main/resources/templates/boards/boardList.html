@@ -30,9 +30,14 @@
 <!--            정방향-->
 <!--            <td th:text="${stat.count + (pageDto.rowPerPage * (pageDto.page - 1))}"></td>-->
 <!--            <td><img th:src="@{/uploadImage/${board.boardFile.fileName}}" width="100" height="100"></td>-->
-            <td th:text="${board.boardFile}"></td>
+            <div th:each="file : ${boardFile}">
+<!--                <td th:text="${file.fileName}"></td>-->
+<!--                <td th:text="${#strings.setSplit(file.fileName, ',')[0]}"></td>-->
+<!--                <td><img th:src="@{/uploadImage/${#strings.setSplit(file.fileName, ',')[0]}}" width="100" height="100"></td>-->
+                <td><img th:src="@{|/uploadImage/${#strings.setSplit(file.fileName, ',')[0]}|}" width="100" height="100" alt="안됨"></td>
+            </div>
             <td th:text="${board.title}"></td>
-            <td th:text="${board.content}"></td>
+<!--            <td th:text="${board.content}"></td>-->
             <td th:text="${board.member.userId}"></td>
             <td th:text="${board.recommend}"></td>
             <td th:text="${#temporals.format(board.createdAt, 'yyyy-MM-dd HH:mm')}"></td>

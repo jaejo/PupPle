@@ -64,12 +64,13 @@ public class BoardController {
 //
 //    }
     @GetMapping("/boards")
-    public String list(@SessionAttribute(required = false, name="principal") Member principal, Model model, PageDto pageDto,
+    public String list(@SessionAttribute(required = false, name="principal") Member principal, Model model, PageDto pageDto, HttpServletRequest request,
                        @RequestParam(value="user", required = false) String user,
                        @RequestParam(value="hint", required = false) String hint,
                        @RequestParam(value="title", required = false) String title,
                        @RequestParam(value="searchTarget", required = false) String obj) {
         if (principal != null) model.addAttribute("member", principal);
+        model.addAttribute("boardFile", boardFileService.findAll());
         if( (hint == null || hint.isEmpty())
                 && (user == null || user.isEmpty())
                 && (title == null || title.isEmpty())) {
@@ -163,8 +164,9 @@ public class BoardController {
         for(MultipartFile f : file) {
             String userFileName = f.getOriginalFilename();
             String fileExtension = userFileName.substring(userFileName.lastIndexOf(".") + 1);
+            userFileName = userFileName.substring(0, userFileName.lastIndexOf("."));
             String uploadFileName = formatedNow + "_" + userFileName + "." + fileExtension;
-            allFile += uploadFileName + "\n";
+            allFile += uploadFileName + ", ";
             File saveFile = new File(FileDir, uploadFileName);
             f.transferTo(saveFile);
         }
@@ -184,7 +186,6 @@ public class BoardController {
 
         boardFileService.save(boardFile);
 
-        model.addAttribute("boardFile", boardFile);
         return "redirect:/boards";
     }
 }
