@@ -1,5 +1,6 @@
 package jajo.jajo_ex.repository;
 
+import jajo.jajo_ex.BoardType;
 import jajo.jajo_ex.domain.Board;
 import jajo.jajo_ex.dto.BoardRequestDto;
 import jajo.jajo_ex.dto.PageDto;
@@ -40,8 +41,9 @@ public class JpaBoardRepository implements BoardRepository {
     }
 
     @Override
-    public List<Board> findBoardAll(PageDto pageDto) {
-        List<Board> result = em.createQuery("select b from Board b order by b.no desc", Board.class)
+    public List<Board> findBoardAll(PageDto pageDto, BoardType boardType) {
+        List<Board> result = em.createQuery("select b from Board b where b.boardType = :category order by b.no desc", Board.class)
+                .setParameter("category", boardType)
                 .setFirstResult(pageDto.getStart()) // start부터
                 .setMaxResults(pageDto.getEnd()) // end개수만큼
                 .getResultList();
@@ -76,9 +78,10 @@ public class JpaBoardRepository implements BoardRepository {
     }
 
     @Override
-    public List<Board> searchByHint(PageDto pageDto, String hint) {
-        List<Board> result = em.createQuery("select b from Board b where b.content like concat('%', :hint, '%') order by b.no desc", Board.class)
+    public List<Board> searchByHint(PageDto pageDto, String hint, BoardType boardType) {
+        List<Board> result = em.createQuery("select b from Board b where b.content like concat('%', :hint, '%') and b.boardType = :category order by b.no desc", Board.class)
                 .setParameter("hint", hint)
+                .setParameter("category", boardType)
                 .setFirstResult(pageDto.getStart()) // start부터
                 .setMaxResults(pageDto.getEnd()) // end개수만큼
                 .getResultList();
@@ -87,9 +90,10 @@ public class JpaBoardRepository implements BoardRepository {
     }
 
     @Override
-    public List<Board> searchByUser(PageDto pageDto, String user) {
-        List<Board> result = em.createQuery("select b from Board b where b.member.id = (select m.id from Member m where m.userId = :user) order by b.no desc", Board.class)
+    public List<Board> searchByUser(PageDto pageDto, String user, BoardType boardType) {
+        List<Board> result = em.createQuery("select b from Board b where b.member.id = (select m.id from Member m where m.userId = :user) and b.boardType = :category order by b.no desc", Board.class)
                 .setParameter("user", user)
+                .setParameter("category", boardType)
                 .setFirstResult(pageDto.getStart()) // start부터
                 .setMaxResults(pageDto.getEnd()) // end개수만큼
                 .getResultList();
@@ -98,9 +102,10 @@ public class JpaBoardRepository implements BoardRepository {
     }
 
     @Override
-    public List<Board> searchByTitle(PageDto pageDto, String title) {
-        List<Board> result = em.createQuery("select b from Board b where b.title like concat('%', :title, '%')", Board.class)
+    public List<Board> searchByTitle(PageDto pageDto, String title, BoardType boardType) {
+        List<Board> result = em.createQuery("select b from Board b where b.title like concat('%', :title, '%') and b.boardType = :category", Board.class)
                 .setParameter("title", title)
+                .setParameter("category", boardType)
                 .setFirstResult(pageDto.getStart())
                 .setMaxResults(pageDto.getEnd())
                 .getResultList();
@@ -109,13 +114,21 @@ public class JpaBoardRepository implements BoardRepository {
     }
 
     @Override
-    public List<Board> searchByRecommend(PageDto pageDto) {
-        List<Board> result = em.createQuery("select b from Board b order by b.recommend desc", Board.class)
+    public List<Board> searchByRecommend(PageDto pageDto, BoardType boardType) {
+        List<Board> result = em.createQuery("select b from Board b where b.boardType = :category order by b.recommend desc", Board.class)
+                .setParameter("category", boardType)
                 .setFirstResult(pageDto.getStart())
                 .setMaxResults(pageDto.getEnd())
                 .getResultList();
         pageDto.setTotalCount(result.size());
         return result;
+    }
+
+    @Override
+    public List<Board> findCategory(BoardType category) {
+        return em.createQuery("select b from Board b where b.boardType = :category", Board.class)
+                .setParameter("category", category)
+                .getResultList();
     }
 
 }

@@ -29,7 +29,7 @@
         <p>
             <textarea id="content" name="content" autocomplete="off" required></textarea>
         </p>
-        <input type="hidden" id="boardType" name="boardType" value="free">
+        <input type="hidden" id="boardType" name="boardType" th:value="${boardType}">
         <button id="register_btn"><span>등록하기</span></button>
     </form>
 </div>

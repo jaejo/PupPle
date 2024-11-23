@@ -1,7 +1,7 @@
 package jajo.jajo_ex;
 
 public enum BoardType implements CodedEnum<Integer> {
-    Hospital(100),
+    hospital(100),
     place(200),
     product(300),
     free(400);
@@ -21,5 +21,14 @@ public enum BoardType implements CodedEnum<Integer> {
         public Converter() {
             super(BoardType.class);
         }
+    }
+
+    public static BoardType create(String requestCategory) {
+        for (BoardType value : BoardType.values()) {
+            if (value.toString().equals(requestCategory)) {
+                return value;
+            }
+        }
+        throw new IllegalStateException("일치하는 카테고리가 존재하지 않습니다.");
     }
 }

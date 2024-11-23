@@ -1,5 +1,6 @@
 package jajo.jajo_ex.service;
 
+import jajo.jajo_ex.BoardType;
 import jajo.jajo_ex.domain.Board;
 import jajo.jajo_ex.domain.Comment;
 import jajo.jajo_ex.domain.Member;
@@ -170,15 +171,9 @@ class MemberServiceIntegrationTest {
 
         });
     }
-//    @Test
-//    public void 질의() {
-//
-//        Board board1 = new Board();
-//        board1.setContent("안녕하시오");
-//        boardService.save(board1);
-//
-//        List<Board> result = boardService.searchByContent("안녕");
-//        System.out.println(result.size());
-//
-//    }
+    @Test
+    public void 카테고리() {
+        List<Board> board = boardService.findCategory(BoardType.free);
+        System.out.println(board.size());
+    }
 }

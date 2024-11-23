@@ -1,5 +1,6 @@
 package jajo.jajo_ex.repository;
 
+import jajo.jajo_ex.BoardType;
 import jajo.jajo_ex.domain.Board;
 import jajo.jajo_ex.dto.BoardRequestDto;
 import jajo.jajo_ex.dto.PageDto;
@@ -11,13 +12,14 @@ public interface BoardRepository {
     Board save(Board board);
     List<Board> findUserBoardAll(String userId);
     List<Board> findAll();
-    List<Board> findBoardAll(PageDto pageDto);
+    List<Board> findBoardAll(PageDto pageDto, BoardType boardType);
     Board findByNo(Long no);
     void delete(Long no);
     int countAll(PageDto pageDto);
     Board isPresentBoard(Long no);
-    List<Board> searchByHint(PageDto pageDto, String hint);
-    List<Board> searchByUser(PageDto pageDto, String user);
-    List<Board> searchByTitle(PageDto pageDto, String title);
-    List<Board> searchByRecommend(PageDto pageDto);
+    List<Board> searchByHint(PageDto pageDto, String hint, BoardType boardType);
+    List<Board> searchByUser(PageDto pageDto, String user, BoardType boardType);
+    List<Board> searchByTitle(PageDto pageDto, String title, BoardType boardType);
+    List<Board> searchByRecommend(PageDto pageDto, BoardType boardType);
+    List<Board> findCategory(BoardType category);
 }

@@ -1,5 +1,6 @@
 package jajo.jajo_ex.service;
 
+import jajo.jajo_ex.BoardType;
 import jajo.jajo_ex.domain.Board;
 import jajo.jajo_ex.dto.PageDto;
 import jajo.jajo_ex.repository.BoardRepository;
@@ -32,57 +33,57 @@ public class BoardService {
         boardRepository.delete(no);
     }
 
-    public List<Board> selectBoardList(PageDto pageDto) {
+    public List<Board> selectBoardList(PageDto pageDto, BoardType boardType) {
         int count = boardRepository.countAll(pageDto);
 
         if (count == 0) return Collections.emptyList();
 
         pageDto.setTotalCount(count);
 
-        return boardRepository.findBoardAll(pageDto);
+        return boardRepository.findBoardAll(pageDto, boardType);
     }
     public Board isPresentBoard(Long no) {
         return boardRepository.isPresentBoard(no);
     }
 
-    public List<Board> searchByHint(PageDto pageDto, String hint) {
+    public List<Board> searchByHint(PageDto pageDto, String hint, BoardType boardType) {
         int count = boardRepository.countAll(pageDto);
 
         if (count == 0) return Collections.emptyList();
 
         pageDto.setTotalCount(count);
 
-        return boardRepository.searchByHint(pageDto, hint);
+        return boardRepository.searchByHint(pageDto, hint, boardType);
     }
 
-    public List<Board> searchByUser(PageDto pageDto, String user) {
+    public List<Board> searchByUser(PageDto pageDto, String user, BoardType boardType) {
         int count = boardRepository.countAll(pageDto);
 
         if (count == 0) return Collections.emptyList();
 
         pageDto.setTotalCount(count);
 
-        return boardRepository.searchByUser(pageDto, user);
+        return boardRepository.searchByUser(pageDto, user, boardType);
     }
 
-    public List<Board> searchByTitle(PageDto pageDto, String title) {
+    public List<Board> searchByTitle(PageDto pageDto, String title, BoardType boardType) {
         int count = boardRepository.countAll(pageDto);
 
         if (count == 0) return Collections.emptyList();
 
         pageDto.setTotalCount(count);
 
-        return boardRepository.searchByTitle(pageDto, title);
+        return boardRepository.searchByTitle(pageDto, title, boardType);
     }
 
-    public List<Board> searchByRecommend(PageDto pageDto) {
+    public List<Board> searchByRecommend(PageDto pageDto, BoardType boardType) {
         int count = boardRepository.countAll(pageDto);
 
         if(count == 0) return Collections.emptyList();
 
         pageDto.setTotalCount(count);
 
-        return boardRepository.searchByRecommend(pageDto);
+        return boardRepository.searchByRecommend(pageDto, boardType);
     }
 
 //    private String createFilePath(MultipartFile file) throws IOException {
@@ -143,4 +144,7 @@ public class BoardService {
 //        }
 //
 //    }
+    public List<Board> findCategory(BoardType category) {
+        return boardRepository.findCategory(category);
+    }
 }

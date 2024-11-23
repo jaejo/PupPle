@@ -40,33 +40,40 @@ public class BoardController {
     }
 
     @GetMapping("/newBoard")
-    public String createBoardForm(@SessionAttribute(required = false, name="principal") Member principal, Model model) {
+    public String createBoardForm(@SessionAttribute(required = false, name="principal") Member principal, Model model,
+                                  @RequestParam(name="boardType") BoardType boardType) {
         if (principal != null) model.addAttribute("member", principal);
+        model.addAttribute("boardType", boardType);
         return "boards/createBoardForm";
     }
     @GetMapping("/boards")
     public String list(@SessionAttribute(required = false, name="principal") Member principal, Model model, PageDto pageDto,
+                       @RequestParam(required= false, name="boardType") BoardType boardType,
                        @RequestParam(value="hint", required = false) String hint,
                        @RequestParam(value="searchTarget", required = false) String obj) {
+
+        model.addAttribute("boardType", boardType);
+
+
         if (principal != null) model.addAttribute("member", principal);
         model.addAttribute("boardFile", boardFileService.findAll());
         if( (hint == null || hint.isEmpty())) {
             // 추천순 검색
-            if (Objects.equals(obj, "targetRecommend")) model.addAttribute("boards", boardService.searchByRecommend(pageDto));
-            else model.addAttribute("boards", boardService.selectBoardList(pageDto));
+            if (Objects.equals(obj, "targetRecommend")) model.addAttribute("boards", boardService.searchByRecommend(pageDto, boardType));
+            else model.addAttribute("boards", boardService.selectBoardList(pageDto, boardType));
         }
         else {
             // 내용기반 검색
             if (obj.equals("targetContent")) {
-                model.addAttribute("boards", boardService.searchByHint(pageDto, hint));
+                model.addAttribute("boards", boardService.searchByHint(pageDto, hint, boardType));
             }
             // 유저기반 검색
             if (obj.equals("targetUser")) {
-                model.addAttribute("boards", boardService.searchByUser(pageDto, hint));
+                model.addAttribute("boards", boardService.searchByUser(pageDto, hint, boardType));
             }
             // 제목기반 검색
             if (obj.equals("targetTitle")) {
-                model.addAttribute("boards", boardService.searchByTitle(pageDto, hint));
+                model.addAttribute("boards", boardService.searchByTitle(pageDto, hint, boardType));
             }
         }
         return "boards/boardList";
@@ -141,7 +148,8 @@ public class BoardController {
         String formatedNow = zdateTime.format(formatter);
         // 저장될 경로 지정
         String FileDir = "C:\\Users\\LEEJAEJOON\\Documents\\PupPle\\src\\main\\resources\\static\\uploadImage\\";
-
+        FileDir += form.getBoardType() + "\\";
+        System.out.println(FileDir);
         for (MultipartFile f : file) {
             if (!f.isEmpty()) {
                 String userFileName = f.getOriginalFilename();
@@ -153,6 +161,8 @@ public class BoardController {
                 f.transferTo(saveFile);
             }
         }
+
+        System.out.println("보드 타입: " + form.getBoardType());
 
         Board board = Board.builder()
                 .member(member)
@@ -170,7 +180,7 @@ public class BoardController {
 
         boardFileService.save(boardFile);
 
-        return "redirect:/boards";
+        return "redirect:/boards?boardType=" + form.getBoardType();
     }
 
 }
