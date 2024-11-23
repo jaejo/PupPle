@@ -1,5 +1,6 @@
 package jajo.jajo_ex.controller;
 
+import jajo.jajo_ex.BoardType;
 import jajo.jajo_ex.domain.Board;
 import jajo.jajo_ex.domain.BoardFile;
 import jajo.jajo_ex.domain.Comment;
@@ -157,6 +158,7 @@ public class BoardController {
                 .member(member)
                 .title(form.getTitle())
                 .content(form.getContent())
+                .boardType(form.getBoardType())
                 .build();
 
         boardService.save(board);
@@ -170,4 +172,5 @@ public class BoardController {
 
         return "redirect:/boards";
     }
+
 }

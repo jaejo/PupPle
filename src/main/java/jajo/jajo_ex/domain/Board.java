@@ -1,5 +1,6 @@
 package jajo.jajo_ex.domain;
 
+import jajo.jajo_ex.BoardType;
 import jajo.jajo_ex.Timestamped;
 import jajo.jajo_ex.dto.BoardRequestDto;
 import jajo.jajo_ex.dto.CommentRequestDto;
@@ -35,6 +36,9 @@ public class Board extends Timestamped {
     private String title;
     private String content;
     private int recommend;
+
+    @Column(name = "category")
+    private BoardType boardType;
 
     public void addComment(Comment comment) {
         this.comments.add(comment);
