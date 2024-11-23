@@ -24,11 +24,11 @@ public class MemberController {
     public MemberController(MemberService memberService) {
         this.memberService = memberService;
     }
-    @GetMapping("/members/new")
+    @GetMapping("/newMember")
     public String createForm() {
         return "members/createMemberForm";
     }
-    @PostMapping("/members/new")
+    @PostMapping("/newMember")
     public String create(MemberForm form) {
         Member member = new Member();
 

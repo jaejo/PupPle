@@ -31,13 +31,16 @@
 <!--            <td th:text="${stat.count + (pageDto.rowPerPage * (pageDto.page - 1))}"></td>-->
 <!--            <td><img th:src="@{/uploadImage/${board.boardFile.fileName}}" width="100" height="100"></td>-->
             <div th:each="file : ${boardFile}">
-<!--                <td th:text="${file.fileName}"></td>-->
-<!--                <td th:text="${#strings.setSplit(file.fileName, ',')[0]}"></td>-->
-<!--                <td><img th:src="@{/uploadImage/${#strings.setSplit(file.fileName, ',')[0]}}" width="100" height="100"></td>-->
-                <td><img th:src="@{|/uploadImage/${#strings.setSplit(file.fileName, ',')[0]}|}" width="100" height="100" alt="안됨"></td>
+                <div th:if="${board.no == file.board.no}">
+                    <div th:if="${not #strings.isEmpty(file.fileName)}">
+                        <td><img th:src="@{|/uploadImage/${#strings.setSplit(file.fileName, ',')[0]}|}" width="100" height="100" alt="없음"></td>
+                    </div>
+                    <div th:unless="${not #strings.isEmpty(file.fileName)}">
+                        <td><img th:src="@{/image/logo.png}" width="100" height="100" alt="사진 없음"></td>
+                    </div>
+                </div>
             </div>
             <td th:text="${board.title}"></td>
-<!--            <td th:text="${board.content}"></td>-->
             <td th:text="${board.member.userId}"></td>
             <td th:text="${board.recommend}"></td>
             <td th:text="${#temporals.format(board.createdAt, 'yyyy-MM-dd HH:mm')}"></td>
@@ -58,14 +61,21 @@
     >
 </div>
 <div class="createBtn">
-    <button class="create_btn" onclick="checkLogin()">글쓰기</button>
+    <button class="create_btn" onclick="createBoard()">글쓰기</button>
+</div>
+</div>
+<div th:unless="!${#lists.isEmpty(boards)}">
+    <div class="noBoard">
+        <label>아직 글이 없거나 조회할 수 없습니다.</label>
+        <button class="create_btn" onclick="createBoard()">글쓰기</button>
+    </div>
 </div>
 <div class="search">
-<!--    <form name="searchForm" th:action="@{/boards?hintUser=${user}&hintContent=${hint}&hintTitle=${title}}" method="get">-->
-    <form name="searchForm" th:action="@{/boards?${user}&${hint}&${title}}" method="get">
+    <!--    <form name="searchForm" th:action="@{/boards?hintUser=${user}&hintContent=${hint}&hintTitle=${title}}" method="get">-->
+    <form name="searchForm" th:action="@{/boards?${hint}}" method="get">
         <div class="search_child">
             <div>
-<!--                select 태그에 name을 지정하면 폼 데이터 참조-->
+                <!--                select 태그에 name을 지정하면 폼 데이터 참조-->
                 <select id="searchTarget" name="searchTarget" onchange="selectTarget(this.value)">
                     <option value="targetNull">검색대상을 고르세요.</option>
                     <option value="targetUser">유저</option>
@@ -74,27 +84,14 @@
                     <option value="targetRecommend">추천순</option>
                 </select>
             </div>
-            <div class="UserSearch" id="UserSearch">
-                <input type="text" th:name="user" placeholder="찾고 싶은 유저 아이디를 입력하세요.">
-            </div>
-            <div class="ContentSearch" id="ContentSearch">
+            <div class="searchItem" id="searchItem">
                 <input type="text" th:name="hint" placeholder="찾고 싶은 내용을 입력하세요.">
-            </div>
-            <div class="TitleSearch" id="TitleSearch">
-                <input type="text" th:name="title" placeholder="찾고 싶은 제목을 입력하세요.">
             </div>
             <div class="search_btn">
                 <button type="submit">검색하기</button>
             </div>
         </div>
     </form>
-</div>
-</div>
-<div th:unless="!${#lists.isEmpty(boards)}">
-    <div class="noBoard">
-        <label>아직 글이 없어요</label>
-        <button class="create_btn" onclick="checkLogin()">글쓰기</button>
-    </div>
 </div>
 </body>
 </html>
@@ -124,34 +121,12 @@
 	    else $('#logout').hide();
 	});
 
-    $("#ContentSearch").hide();
-    $("#TitleSearch").hide();
-    $("#UserSearch").hide();
-
     function selectTarget(obj) {
-        if (obj == "targetContent") {
-            $("#UserSearch").hide();
-            $("#TitleSearch").hide();
-            $("#ContentSearch").show();
-
-        } else if(obj == "targetUser") {
-            $("#ContentSearch").hide();
-            $("#TitleSearch").hide();
-            $("#UserSearch").show();
-        }
-        else if(obj == "targetTitle") {
-            $("#ContentSearch").hide();
-            $("#UserSearch").hide();
-            $("#TitleSearch").show();
-        }
-        else {
-            $("#ContentSearch").hide();
-            $("#UserSearch").hide();
-            $("#TitleSearch").hide();
-        }
+        if (obj == "targetRecommend") $("#searchItem").hide();
+        else $("#searchItem").show();
     }
 
-    function checkLogin() {
+    function createBoard() {
         location.replace("/newBoard");
     }
 </script>

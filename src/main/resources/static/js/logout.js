@@ -5,8 +5,8 @@ function logout() {
             success: function () {
                 alert("로그아웃");
                 $("#logout").hide();
-//                $("#showId").hide();
                 $("#login").show();
+                location.reload(true);
             },
             error: function () {
                 alert("서버 요청 실패");

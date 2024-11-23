@@ -20,8 +20,8 @@ public class LoginController {
 
     @GetMapping("/login")
     public String loginForm(HttpServletRequest request) {
-//        String uri = request.getHeader("Referer");
-//        request.getSession().setAttribute("prevPage", uri);
+        String uri = request.getHeader("Referer");
+        request.getSession().setAttribute("prevPage", uri);
         return "members/checkLogin";
     }
 
@@ -43,12 +43,8 @@ public class LoginController {
                 .build();
         session.setAttribute("principal", member);
 
-//        HttpSession session = request.getSession();
-//        session.setAttribute(SessionConst.LOGIN_MEMBER, result);
-
-//        if(request.getSession().getAttribute("prevPage") == null) return "redirect:/";
-//        else return "redirect:" + request.getSession().getAttribute("prevPage");
-        return "redirect:/";
+        if(request.getSession().getAttribute("prevPage") == null) return "redirect:/";
+        else return "redirect:" + request.getSession().getAttribute("prevPage");
     }
 
     @PostMapping("/logout")

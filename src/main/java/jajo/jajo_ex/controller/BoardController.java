@@ -43,49 +43,29 @@ public class BoardController {
         if (principal != null) model.addAttribute("member", principal);
         return "boards/createBoardForm";
     }
-//    @PostMapping("/newBoard")
-//    @Transactional
-//    public String create(@SessionAttribute(required = false, name="principal") Member principal, BoardForm form, Model model) {
-//        if (principal != null) model.addAttribute("member", principal);
-//
-//        Board board = new Board();
-//
-//        board.setTitle(form.getTitle());
-//        board.setContent(form.getContent());
-//
-//        boardService.save(board);
-//        Member member1 = memberService.findById(principal);
-//
-//        board.setMember(member1);
-//        member1.getBoards().add(board);
-//        memberService.join(member1);
-//
-//        return "redirect:/boards";
-//
-//    }
     @GetMapping("/boards")
-    public String list(@SessionAttribute(required = false, name="principal") Member principal, Model model, PageDto pageDto, HttpServletRequest request,
-                       @RequestParam(value="user", required = false) String user,
+    public String list(@SessionAttribute(required = false, name="principal") Member principal, Model model, PageDto pageDto,
                        @RequestParam(value="hint", required = false) String hint,
-                       @RequestParam(value="title", required = false) String title,
                        @RequestParam(value="searchTarget", required = false) String obj) {
         if (principal != null) model.addAttribute("member", principal);
         model.addAttribute("boardFile", boardFileService.findAll());
-        if( (hint == null || hint.isEmpty())
-                && (user == null || user.isEmpty())
-                && (title == null || title.isEmpty())) {
+        if( (hint == null || hint.isEmpty())) {
+            // 추천순 검색
             if (Objects.equals(obj, "targetRecommend")) model.addAttribute("boards", boardService.searchByRecommend(pageDto));
             else model.addAttribute("boards", boardService.selectBoardList(pageDto));
         }
         else {
-            if (!hint.isEmpty()) {
+            // 내용기반 검색
+            if (obj.equals("targetContent")) {
                 model.addAttribute("boards", boardService.searchByHint(pageDto, hint));
             }
-            if (!user.isEmpty()) {
-                model.addAttribute("boards", boardService.searchByUser(pageDto, user));
+            // 유저기반 검색
+            if (obj.equals("targetUser")) {
+                model.addAttribute("boards", boardService.searchByUser(pageDto, hint));
             }
-            if (!title.isEmpty()) {
-                model.addAttribute("boards", boardService.searchByTitle(pageDto, title));
+            // 제목기반 검색
+            if (obj.equals("targetTitle")) {
+                model.addAttribute("boards", boardService.searchByTitle(pageDto, hint));
             }
         }
         return "boards/boardList";
@@ -148,27 +128,29 @@ public class BoardController {
         return "redirect:/boards";
     }
 
-    @PostMapping("/posting")
+    @PostMapping("/newBoard")
     @Transactional
     public String post(@SessionAttribute(required=false, name="principal") Member principal, Model model,
-                               @RequestParam(name="file") MultipartFile[] file, BoardForm form) throws IOException {
+                               @RequestParam(required=false, name="file") MultipartFile[] file, BoardForm form) throws IOException {
         if (principal != null) model.addAttribute("member", principal);
-        // 저장될 경로 지정
-        String FileDir = "C:\\Users\\LEEJAEJOON\\Documents\\PupPle\\src\\main\\resources\\static\\uploadImage\\";
         Member member = memberService.findById(principal);
-//        중복 이미지 방지를 위해 현재 시간 추가
+        String allFile = "";
         ZonedDateTime zdateTime = ZonedDateTime.now();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss");
         String formatedNow = zdateTime.format(formatter);
-        String allFile = "";
-        for(MultipartFile f : file) {
-            String userFileName = f.getOriginalFilename();
-            String fileExtension = userFileName.substring(userFileName.lastIndexOf(".") + 1);
-            userFileName = userFileName.substring(0, userFileName.lastIndexOf("."));
-            String uploadFileName = formatedNow + "_" + userFileName + "." + fileExtension;
-            allFile += uploadFileName + ", ";
-            File saveFile = new File(FileDir, uploadFileName);
-            f.transferTo(saveFile);
+        // 저장될 경로 지정
+        String FileDir = "C:\\Users\\LEEJAEJOON\\Documents\\PupPle\\src\\main\\resources\\static\\uploadImage\\";
+
+        for (MultipartFile f : file) {
+            if (!f.isEmpty()) {
+                String userFileName = f.getOriginalFilename();
+                String fileExtension = userFileName.substring(userFileName.lastIndexOf(".") + 1);
+                userFileName = userFileName.substring(0, userFileName.lastIndexOf("."));
+                String uploadFileName = formatedNow + "_" + userFileName + "." + fileExtension;
+                allFile += uploadFileName + ", ";
+                File saveFile = new File(FileDir, uploadFileName);
+                f.transferTo(saveFile);
+            }
         }
 
         Board board = Board.builder()

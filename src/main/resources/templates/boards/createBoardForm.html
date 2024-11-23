@@ -14,7 +14,7 @@
     <h1>글쓰기</h1>
 </div>
 <div class="write">
-    <form name="writeform" enctype="multipart/form-data" action="/posting" method="post">
+    <form name="writeform" enctype="multipart/form-data" action="/newBoard" method="post">
         <input id="file" type="file" name="file" accept="image/*" multiple>
         <output id="output" name="output"></output>
         <p>
@@ -66,16 +66,4 @@
         output.textContent = Array.from(files).map(file => file.name).join('\n');
     })
 
-<!--    function upload() {-->
-<!--        let fileName = output.textContent;-->
-<!--        console.log(fileName);-->
-<!--        $.ajax ({-->
-<!--            type : "POST",-->
-<!--            url : "/posting",-->
-<!--            data : fileName,-->
-<!--            success : function (response) {-->
-<!--                location.replace("/boards");-->
-<!--            }-->
-<!--        });-->
-<!--    }-->
 </script>

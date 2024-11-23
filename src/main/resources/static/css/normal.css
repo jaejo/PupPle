@@ -4,6 +4,10 @@
 html {
   font-family: 'Ubuntu', sans-serif;
 }
+
+/* createMemberForm */
+/* createMemberForm end */
+
 /* 폰트 끝 */
 .top {
     margin : 0 auto;
@@ -219,14 +223,7 @@ b {
     align-items: center;
 }
 
-.UserSearch input {
-    width : 400px;
-}
-
-.ContentSearch input {
-    width : 400px;
-}
-.TitleSearch input {
+.searchItem input {
     width : 400px;
 }
 

@@ -2,8 +2,9 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <link rel="stylesheet" th:href="@{/css/normal.css}">
 <head>
-    <meta charset="UTF-8">
     <script src="http://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script th:src="@{/js/logout.js}"></script>
+    <meta charset="UTF-8">
 </head>
 <body>
 <div class="include_wrap" data-include-path="header.html"></div>
@@ -23,13 +24,12 @@
                 <span th:text="${msg}"></span>
             </div>
             <div class="loginButton">
-                <button class="join_btn"><a href="/members/new">회원 가입</a></button>
+                <button class="join_btn"><a href="/newMember">회원 가입</a></button>
                 <button class="login_btn" type="submit"><span>로그인</span></button>
             </div>
         </form>
     </div>
 </section>
-<script th:src="@{/js/logout.js}"></script>
 </body>
 </html>
 <script>

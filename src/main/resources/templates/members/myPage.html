@@ -33,7 +33,7 @@
     </div>
     <div class="updateMemberBtn">
         <button id="btn-update" class="btn btn-dark" onclick="update()">정보수정하기</button>
-        <a th:href="@{/boards(searchTarget=targetUser, user=${member.getUserId()}, hint, title)}">내 글 찾기</a>
+        <a th:href="@{/boards(searchTarget=targetUser, hint=${member.getUserId()})}">내 글 찾기</a>
     </div>
 </div>
 </body>
