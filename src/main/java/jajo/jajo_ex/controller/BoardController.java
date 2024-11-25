@@ -125,15 +125,18 @@ public class BoardController {
     }
 
     @PostMapping("/updateForm")
+    @ResponseBody
     @Transactional
-    public String updateForm(@SessionAttribute(required = false, name="principal") Member principal, BoardForm boardForm, Model model) {
+    public ResponseDto<?> updateForm(@SessionAttribute(required = false, name="principal") Member principal,
+                             @RequestBody BoardRequestDto boardRequestDto, Model model, HttpServletRequest request) {
         if (principal != null) model.addAttribute("member", principal);
-        // 글을 수정하기 위해 영속성 콘텍스트에 저장
-        Board board = boardService.findNo(boardForm.getNo());
-        board.setTitle(boardForm.getTitle());
-        board.setContent(boardForm.getContent());
+
+        Board board = boardService.isPresentBoard(boardRequestDto.getNo());
+        board.update(boardRequestDto);
+
         boardService.save(board);
-        return "redirect:/boards";
+
+        return ResponseDto.success(board.getBoardType());
     }
 
     @PostMapping("/newBoard")

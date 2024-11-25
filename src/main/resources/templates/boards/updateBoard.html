@@ -14,20 +14,18 @@
 </div>
 <h1 style="text-align: center; font-weight: bold;">수정폼</h1>
 <div class="formDetail">
-    <form name="updateform" action="/updateForm" method="post" >
-    <!--        <input type="text" id="no" name="no" th:value="${no}" readonly>-->
-        <div class="title_area">
-            <label>제목</label>
-            <input type="text" id="title" name="title" th:value="${title}">
-        </div>
-        <div class="content_area">
-            <label>내용</label>
-            <textarea id="content" name="content" th:text="${content}"></textarea>
-        </div>
-        <div class="button_area">
-            <button id="modify_btn" type="submit">수정하기</button>
-        </div>
-    </form>
+    <input type="hidden" id="no" th:value="${no}">
+    <div class="title_area">
+        <label>제목</label>
+        <input type="text" id="title" name="title" th:value="${title}">
+    </div>
+    <div class="content_area">
+        <label>내용</label>
+        <textarea id="content" name="content" th:text="${content}"></textarea>
+    </div>
+    <div class="button_area">
+        <button id="modify_btn" onclick="updateForm()">수정하기</button>
+    </div>
 </div>
 </body>
 </html>
@@ -56,4 +54,26 @@
 	    if (loginUser != null) $('#login').hide();
 	    else $('#logout').hide();
 	});
+
+    function updateForm() {
+        var data = {
+            no : $("#no").val(),
+            title : $("#title").val(),
+            content : $("#content").val()
+        }
+        $.ajax ({
+            type: "POST",
+            url: "/updateForm",
+            data: JSON.stringify(data),
+            dataType : "json",
+            contentType : "application/json;charset=UTF-8",
+            success : function(dataType) {
+                alert("게시글 변경 성공");
+                location.replace("/boards?boardType=" + dataType.data);
+            },
+            error : function(data) {
+                alert("에러 발생");
+            }
+        });
+    }
 </script>

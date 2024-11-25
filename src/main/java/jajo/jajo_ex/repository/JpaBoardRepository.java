@@ -67,8 +67,9 @@ public class JpaBoardRepository implements BoardRepository {
     }
 
     @Override
-    public int countAll(PageDto pageDto) {
-        Query query = em.createQuery("select b from Board b");
+    public int countAll(PageDto pageDto, BoardType boardType) {
+        Query query = em.createQuery("select b from Board b where b.boardType = :category")
+                .setParameter("category", boardType);
         return query.getResultList().size();
     }
 

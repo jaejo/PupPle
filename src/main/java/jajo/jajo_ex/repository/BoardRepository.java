@@ -15,7 +15,7 @@ public interface BoardRepository {
     List<Board> findBoardAll(PageDto pageDto, BoardType boardType);
     Board findByNo(Long no);
     void delete(Long no);
-    int countAll(PageDto pageDto);
+    int countAll(PageDto pageDto, BoardType boardType);
     Board isPresentBoard(Long no);
     List<Board> searchByHint(PageDto pageDto, String hint, BoardType boardType);
     List<Board> searchByUser(PageDto pageDto, String user, BoardType boardType);

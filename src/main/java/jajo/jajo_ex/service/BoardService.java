@@ -34,7 +34,7 @@ public class BoardService {
     }
 
     public List<Board> selectBoardList(PageDto pageDto, BoardType boardType) {
-        int count = boardRepository.countAll(pageDto);
+        int count = boardRepository.countAll(pageDto, boardType);
 
         if (count == 0) return Collections.emptyList();
 
@@ -47,7 +47,7 @@ public class BoardService {
     }
 
     public List<Board> searchByHint(PageDto pageDto, String hint, BoardType boardType) {
-        int count = boardRepository.countAll(pageDto);
+        int count = boardRepository.countAll(pageDto, boardType);
 
         if (count == 0) return Collections.emptyList();
 
@@ -57,7 +57,7 @@ public class BoardService {
     }
 
     public List<Board> searchByUser(PageDto pageDto, String user, BoardType boardType) {
-        int count = boardRepository.countAll(pageDto);
+        int count = boardRepository.countAll(pageDto, boardType);
 
         if (count == 0) return Collections.emptyList();
 
@@ -67,7 +67,7 @@ public class BoardService {
     }
 
     public List<Board> searchByTitle(PageDto pageDto, String title, BoardType boardType) {
-        int count = boardRepository.countAll(pageDto);
+        int count = boardRepository.countAll(pageDto, boardType);
 
         if (count == 0) return Collections.emptyList();
 
@@ -77,7 +77,7 @@ public class BoardService {
     }
 
     public List<Board> searchByRecommend(PageDto pageDto, BoardType boardType) {
-        int count = boardRepository.countAll(pageDto);
+        int count = boardRepository.countAll(pageDto, boardType);
 
         if(count == 0) return Collections.emptyList();
 
