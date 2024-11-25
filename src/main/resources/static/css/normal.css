@@ -159,6 +159,11 @@ b {
     text-align : center;
 }
 
+.recommendBoard {
+    width : 75%;
+    margin : 0 auto;
+}
+
 /* boardDetail css */
 .createCommentItem {
     margin: auto;
