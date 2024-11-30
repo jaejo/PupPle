@@ -33,7 +33,17 @@
     </div>
     <div class="updateMemberBtn">
         <button id="btn-update" class="btn btn-dark" onclick="update()">정보수정하기</button>
-        <a th:href="@{/boards(searchTarget=targetUser, hint=${member.getUserId()})}">내 글 찾기</a>
+<!--        <a th:href="@{/boards(searchTarget=targetUser, boardType=free, hint=${member.getUserId()})}">내 글 찾기</a>-->
+        <div>
+            <select id="type">
+
+                <option value="free">자유게시판</option>
+                <option value="hospital">병원추천게시판</option>
+                <option value="place">장소추천게시판</option>
+            </select>
+
+            <button id="searchMyWork" type="button" onclick="findMyWriting()">검색하기</button>
+        </div>
     </div>
 </div>
 </body>
@@ -171,4 +181,17 @@
     btn.addEventListener('click', function() {
         alert('아이디를 바꾸실 수 없습니다.');
     })
+
+    function findMyWriting() {
+        var loginUser = $("#loginUser").val();
+        var selectType = $("#type option:selected").val();
+
+        url = "/boards?searchTarget=targetUser&hint=" + loginUser + "&boardType=" + selectType;
+
+        location.href = url;
+    }
+
+
+
+
 </script>

@@ -8,5 +8,4 @@ import lombok.Getter;
 @Builder
 public class FileRequestDto {
     private String fileName;
-
 }

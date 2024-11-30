@@ -21,4 +21,12 @@ public class BoardFileService {
     public List<BoardFile> findAll() {
         return boardFileRepository.findAll();
     }
+
+    public List<BoardFile> findByBoard(Long no) {
+        return boardFileRepository.findByBoard(no);
+    }
+
+    public void updateFileName(Long no, String fileName) {
+        boardFileRepository.updateFileName(no, fileName);
+    }
 }

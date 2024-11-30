@@ -9,7 +9,7 @@
 </head>
 <body>
 <div class="include_wrap" data-include-path="header.html"></div>
-    <form th:action="@{/updateBoard(no=${board.getNo()},title=${board.getTitle()},content=${board.getContent()})}" method="post">
+    <form th:action="@{/updateBoard(no=${board.getNo()},title=${board.getTitle()},content=${board.getContent()}, boardType=${boardType})}" method="post">
         <div class="good_content">
             <div class="good_content_child">
                 <div class="good_content_user">
@@ -34,12 +34,19 @@
                 <textarea th:text="${board.getContent()}" readonly></textarea>
             </div>
         </div>
-        <div class="ctrl_btn" id="ctrl_btn">
-            <div class="ctrl_btn_child">
-                <button id="modify_btn" type="submit">수정하기</button>
-<!--                form안에 버튼은 sumit 역할을 하기 때문에 type="button"-->
-                <button type="button" id="deleteFormAjax" onclick="deleteForm();">게시글 삭제</button>
+        <div th:each="files : ${boardFile}">
+            <div class="images" th:if="${files.fileName != ''}">
+                <div th:each="file : ${#strings.setSplit(files.fileName, ',')}">
+                    <div class="imageDetail" th:if="${#strings.trim(file) != ''}">
+                        <img th:src="@{|/uploadImage/${boardType}/${#strings.trim(file)}|}" width="100" height="100" alt="없음">
+                    </div>
+                </div>
             </div>
+        </div>
+        <div class="ctrl_btn" id="ctrl_btn">
+            <button class="ctrl_ModifyBtn" id="modify_btn" type="submit">수정하기</button>
+<!--                form안에 버튼은 sumit 역할을 하기 때문에 type="button"-->
+            <button class="ctrl_RemoveBtn" type="button" id="deleteFormAjax" onclick="deleteForm();">게시글 삭제</button>
         </div>
     </form>
 
@@ -47,6 +54,7 @@
 <input type="hidden" id="boardNo" th:value="${board.getNo()}">
 <input type="hidden" id="loginUser" th:value="${member.getUserId()}">
 <input type="hidden" id="loginId" th:value="${member.getId()}">
+<input type="hidden" id="boardType" th:value="${boardType}">
 
 <div class="comment" th:if="!${#lists.isEmpty(comments)}">
     <div class="comment_label"><label><h2>댓글</h2></label></div>
@@ -171,7 +179,8 @@
 
                 success: function(rest) {
                     alert("삭제 완료");
-                    location.href="/boards"
+                    var boardType = $('input[id=boardType]').val();
+                    location.href="/boards?boardType=" + boardType;
                 }, error: function(error) {
                     console.log("통신불가");
                 }

@@ -292,14 +292,37 @@ b {
 .ctrl_btn {
     border : 1px solid black;
     width : 75%;
+    max-width : 75%;
     padding : 10px;
     text-align: center;
     margin : 0 auto;
+    display : flex;
+    justify-content : center;
+    align-items : center;
 }
 
-.ctrl_btn_child {
-    display: inline-block;
-    width : 300px;
+.images {
+    width : 75%;
+    max-width : 75%;
+    height : auto;
+    margin : 0 auto;
+    display : flex;
+    flex-direction : row;
+    flex-flow : wrap;
+    justify-content : flex-start;
+    align-items : center;
+    border : 1px solid black;
+    margin-bottom : 10px;
+}
+
+.imageDetail {
+    margin-right : 5px;
+    display : flex;
+    flex-direction : column;
+}
+
+.removeImage {
+    text-align : center;
 }
 
 /* 테이블 */

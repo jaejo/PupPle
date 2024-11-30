@@ -23,9 +23,33 @@
         <label>내용</label>
         <textarea id="content" name="content" th:text="${content}"></textarea>
     </div>
+    <form id="imageForm">
+        <div class="image_area">
+            <label>추가할 파일</label>
+            <input id="file" type="file" name="file" accept="image/*" multiple>
+            <output id="output" name="output"></output>
+        </div>
+    </form>
     <div class="button_area">
         <button id="modify_btn" onclick="updateForm()">수정하기</button>
     </div>
+</div>
+<div>
+    <div th:each="files : ${boardFile}">
+        <div class="images" th:if="${files.fileName != ''}">
+            <div th:each="file : ${#strings.setSplit(files.fileName, ',')}">
+                <div class="imageDetail" th:if="${#strings.trim(file) != ''}">
+                    <img th:src="@{|/uploadImage/${boardType}/${#strings.trim(file)}|}" width="100" height="100" alt="없음">
+                    <div class="removeImage">
+                        <input type="checkbox" name="images" th:value="${#strings.trim(file)}">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div>
+    <input type="hidden" id="boardType" th:value="${boardType}">
 </div>
 </body>
 </html>
@@ -55,25 +79,72 @@
 	    else $('#logout').hide();
 	});
 
+	document.getElementById('file').addEventListener('input', (event) => {
+        const files = event.target.files;
+        output.textContent = Array.from(files).map(file => file.name).join('\n');
+    })
+
     function updateForm() {
+<!--        체크한 것 리스트-->
+        const query = 'input[name="images"]:checked';
+        const selectAll = document.querySelectorAll(query);
+        let result = '';
+        selectAll.forEach((el) => {
+            result += el.value + ', ';
+        });
+<!--        체크안한 것 리스트-->
+        const query1 = 'input[name="images"]:not(:checked)'
+        const selectAll1 = document.querySelectorAll(query1);
+        let result1 = '';
+        selectAll1.forEach((el) => {
+            result1 += el.value + ', ';
+        });
+
+        let formData = new FormData();
+        var inputFile = $("input[name='file']");
+        var files = inputFile[0].files;
+
+        for(var i =0;i<files.length;i++){
+			formData.append("file", files[i]);
+		}
+
         var data = {
             no : $("#no").val(),
             title : $("#title").val(),
-            content : $("#content").val()
+            content : $("#content").val(),
+            boardType : $("#boardType").val(),
+            deleteFileName : result,
+            remainFileName : result1,
         }
+
+        formData.append("info", new Blob([JSON.stringify(data)], {type: "application/json"}));
+
         $.ajax ({
             type: "POST",
             url: "/updateForm",
-            data: JSON.stringify(data),
-            dataType : "json",
-            contentType : "application/json;charset=UTF-8",
+            data : formData,
+            contentType : false,
+            processData : false,
             success : function(dataType) {
                 alert("게시글 변경 성공");
                 location.replace("/boards?boardType=" + dataType.data);
-            },
-            error : function(data) {
+            }, error : function(data) {
                 alert("에러 발생");
             }
         });
+<!--        $.ajax ({-->
+<!--            type: "POST",-->
+<!--            url: "/updateForm",-->
+<!--            data: JSON.stringify(data),-->
+<!--            dataType : "json",-->
+<!--            success : function(dataType) {-->
+<!--                alert("게시글 변경 성공");-->
+<!--                location.replace("/boards?boardType=" + dataType.data);-->
+<!--            },-->
+<!--            error : function(data) {-->
+<!--                alert("에러 발생");-->
+<!--            }-->
+<!--        });-->
     }
+
 </script>

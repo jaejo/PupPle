@@ -26,7 +26,7 @@
                 </tr>
             </thead>
             <tbody>
-                <tr th:each="board, stat : ${boards}" th:onclick="|location.href='@{detail(no=${board.no})}'|">
+                <tr th:each="board, stat : ${boards}" th:onclick="|location.href='@{detail(no=${board.no}, boardType=${boardType})}'|">
                     <td th:text="${pageDto.totalCount - (((pageDto.page - 1) * pageDto.rowPerPage) + stat.index)}"></td>
         <!--            정방향-->
         <!--            <td th:text="${stat.count + (pageDto.rowPerPage * (pageDto.page - 1))}"></td>-->
@@ -80,10 +80,9 @@
 
     <a th:if="${pageDto.endPage != pageDto.lastPage}" th:href="@{/boards(page=${pageDto.endPage + 1})}"></a>
     >
-</div>
-<div class="createBtn">
-    <button class="create_btn" th:onclick="createBoard([[${boardType}]])">글쓰기</button>
-</div>
+    <div class="createBtn">
+        <button class="create_btn" th:onclick="createBoard([[${boardType}]])">글쓰기</button>
+    </div>
 </div>
 <div th:unless="!${#lists.isEmpty(boards)}">
     <div class="noBoard">

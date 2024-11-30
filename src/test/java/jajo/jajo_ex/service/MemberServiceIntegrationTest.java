@@ -2,6 +2,7 @@ package jajo.jajo_ex.service;
 
 import jajo.jajo_ex.BoardType;
 import jajo.jajo_ex.domain.Board;
+import jajo.jajo_ex.domain.BoardFile;
 import jajo.jajo_ex.domain.Comment;
 import jajo.jajo_ex.domain.Member;
 import jajo.jajo_ex.dto.CommentResponseDto;
@@ -32,6 +33,7 @@ class MemberServiceIntegrationTest {
     @Autowired BoardService boardService;
     @Autowired CommentService commentService;
     @Autowired CommentRepository commentRepository;
+    @Autowired BoardFileService boardFileService;
 
     @Test
     void 회원가입() {
@@ -175,5 +177,11 @@ class MemberServiceIntegrationTest {
     public void 카테고리() {
         List<Board> board = boardService.findCategory(BoardType.free);
         System.out.println(board.size());
+    }
+    @Test
+    public void 상세페이지_사진_확인() {
+        Long no = 1L;
+        List<BoardFile> boardFile = boardFileService.findByBoard(no);
+
     }
 }

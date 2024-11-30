@@ -101,38 +101,88 @@ public class BoardController {
     }
 
     @GetMapping("/detail")
-    public String detail(@RequestParam("no") Long no, @SessionAttribute(required = false, name="principal") Member principal, Model model, HttpServletRequest request) {
+    public String detail(@RequestParam("no") Long no, @RequestParam("boardType") BoardType boardType,
+                         @SessionAttribute(required = false, name="principal") Member principal, Model model, HttpServletRequest request) {
         if (principal != null) model.addAttribute("member", principal);
 
         Board board = boardService.findNo(no);
         List<Comment> comment = commentService.findBoardNo(no);
         model.addAttribute("board", board);
         model.addAttribute("comments", getAllCommentsByBoard(no).getData());
+        model.addAttribute("boardFile", boardFileService.findByBoard(no));
+        model.addAttribute("boardType", boardType);
 
         return "boards/boardDetail";
     }
     @PostMapping("/updateBoard")
-    public String update(@RequestParam("no") String no,
+    public String update(@RequestParam("no") Long no,
                          @RequestParam("title") String title,
                          @RequestParam("content") String content,
+                         @RequestParam("boardType") BoardType boardType,
                          @SessionAttribute(required = false, name="principal") Member principal,
                          Model model) {
         if (principal != null) model.addAttribute("member", principal);
         model.addAttribute("no", no);
         model.addAttribute("title", title);
         model.addAttribute("content", content);
+        model.addAttribute("boardFile", boardFileService.findByBoard(no));
+        model.addAttribute("boardType", boardType);
         return "boards/updateBoard";
     }
 
+    //formData로 전송하여 @RequestPart로 이미지와 Dto를 분리
     @PostMapping("/updateForm")
     @ResponseBody
     @Transactional
     public ResponseDto<?> updateForm(@SessionAttribute(required = false, name="principal") Member principal,
-                             @RequestBody BoardRequestDto boardRequestDto, Model model, HttpServletRequest request) {
+                                    @RequestPart(value="info") BoardRequestDto boardRequestDto, Model model,
+                                     @RequestPart(value="file", required = false) MultipartFile[] file) throws IOException{
         if (principal != null) model.addAttribute("member", principal);
 
+        //체크한 파일 삭제
+        String removeFile = boardRequestDto.getDeleteFileName();
+
+        for (String removeFileName : removeFile.split(",")) {
+            removeFileName = removeFileName.trim();
+            if (removeFileName != "") {
+                String DeleteFileDir = "C:\\Users\\LEEJAEJOON\\Documents\\PupPle\\src\\main\\resources\\static\\uploadImage\\";
+                DeleteFileDir += boardRequestDto.getBoardType() + "\\" + removeFileName;
+                File DeleteFile = new File(DeleteFileDir);
+                if (DeleteFile.delete()) {
+                   System.out.println(removeFileName + ": 삭제 완료");
+                }
+            }
+        }
+
+        ZonedDateTime zdateTime = ZonedDateTime.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss");
+        String formatedNow = zdateTime.format(formatter);
+        String FileDir = "C:\\Users\\LEEJAEJOON\\Documents\\PupPle\\src\\main\\resources\\static\\uploadImage\\";
+        FileDir += boardRequestDto.getBoardType() + "\\";
+
+        //기존의 이미지 파일
+        String allFile = boardRequestDto.getRemainFileName();
+
+        //새로 들어온 파일 생성 및 DB 저장
+        if (file != null) {
+            for (MultipartFile f : file) {
+                if (!f.isEmpty()) {
+                    String userFileName = f.getOriginalFilename();
+                    String fileExtension = userFileName.substring(userFileName.lastIndexOf(".") + 1);
+                    userFileName = userFileName.substring(0, userFileName.lastIndexOf("."));
+                    String uploadFileName = formatedNow + "_" + userFileName + "." + fileExtension;
+                    allFile += uploadFileName + ", ";
+                    File saveFile = new File(FileDir, uploadFileName);
+                    f.transferTo(saveFile);
+                }
+            }
+        }
+
         Board board = boardService.isPresentBoard(boardRequestDto.getNo());
+
         board.update(boardRequestDto);
+
+        boardFileService.updateFileName(boardRequestDto.getNo(), allFile);
 
         boardService.save(board);
 
@@ -152,7 +202,6 @@ public class BoardController {
         // 저장될 경로 지정
         String FileDir = "C:\\Users\\LEEJAEJOON\\Documents\\PupPle\\src\\main\\resources\\static\\uploadImage\\";
         FileDir += form.getBoardType() + "\\";
-        System.out.println(FileDir);
         for (MultipartFile f : file) {
             if (!f.isEmpty()) {
                 String userFileName = f.getOriginalFilename();
@@ -164,8 +213,6 @@ public class BoardController {
                 f.transferTo(saveFile);
             }
         }
-
-        System.out.println("보드 타입: " + form.getBoardType());
 
         Board board = Board.builder()
                 .member(member)

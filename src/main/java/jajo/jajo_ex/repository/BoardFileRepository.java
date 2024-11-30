@@ -8,4 +8,6 @@ import java.util.List;
 public interface BoardFileRepository {
     BoardFile save(BoardFile boardFile);
     List<BoardFile> findAll();
+    List<BoardFile> findByBoard(Long no);
+    int updateFileName(Long no, String fileName);
 }

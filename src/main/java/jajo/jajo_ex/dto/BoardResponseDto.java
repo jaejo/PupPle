@@ -14,4 +14,5 @@ public class BoardResponseDto {
     private int recommend;
     private LocalDateTime createdAt;
     private LocalDateTime modifiedAt;
+
 }
