@@ -169,17 +169,18 @@
         }
 
         function deleteForm() {
+            var boardType = $('input[id=boardType]').val();
             $.ajax({
                 type: 'delete',
                 url: "board/deleteForm",
                 data: {
-                    no : boardNo
+                    no : boardNo,
+                    boardType : boardType
                 },
                 dataType: 'json',
 
                 success: function(rest) {
                     alert("삭제 완료");
-                    var boardType = $('input[id=boardType]').val();
                     location.href="/boards?boardType=" + boardType;
                 }, error: function(error) {
                     console.log("통신불가");
