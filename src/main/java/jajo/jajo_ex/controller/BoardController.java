@@ -190,10 +190,13 @@ public class BoardController {
     }
 
     @PostMapping("/newBoard")
+    @ResponseBody
     @Transactional
-    public String post(@SessionAttribute(required=false, name="principal") Member principal, Model model,
-                               @RequestParam(required=false, name="file") MultipartFile[] file, BoardForm form) throws IOException {
+    public ResponseDto<?> post(@SessionAttribute(required=false, name="principal") Member principal, Model model,
+                       @RequestPart(value="info") BoardRequestDto boardRequestDto,
+                       @RequestPart(value="file", required = false) MultipartFile[] file) throws IOException {
         if (principal != null) model.addAttribute("member", principal);
+        System.out.println(file);
         Member member = memberService.findById(principal);
         String allFile = "";
         ZonedDateTime zdateTime = ZonedDateTime.now();
@@ -201,7 +204,7 @@ public class BoardController {
         String formatedNow = zdateTime.format(formatter);
         // 저장될 경로 지정
         String FileDir = "C:\\Users\\LEEJAEJOON\\Documents\\PupPle\\src\\main\\resources\\static\\uploadImage\\";
-        FileDir += form.getBoardType() + "\\";
+        FileDir += boardRequestDto.getBoardType() + "\\";
         for (MultipartFile f : file) {
             if (!f.isEmpty()) {
                 String userFileName = f.getOriginalFilename();
@@ -213,12 +216,11 @@ public class BoardController {
                 f.transferTo(saveFile);
             }
         }
-
         Board board = Board.builder()
                 .member(member)
-                .title(form.getTitle())
-                .content(form.getContent())
-                .boardType(form.getBoardType())
+                .title(boardRequestDto.getTitle())
+                .content(boardRequestDto.getContent())
+                .boardType(boardRequestDto.getBoardType())
                 .build();
 
         boardService.save(board);
@@ -230,7 +232,7 @@ public class BoardController {
 
         boardFileService.save(boardFile);
 
-        return "redirect:/boards?boardType=" + form.getBoardType();
+        return ResponseDto.success(boardRequestDto.getBoardType());
     }
 
 }

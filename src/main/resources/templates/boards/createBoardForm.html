@@ -14,9 +14,17 @@
     <h1>글쓰기</h1>
 </div>
 <div class="write">
-    <form name="writeform" enctype="multipart/form-data" action="/newBoard" method="post">
-        <input id="file" type="file" name="file" accept="image/*" multiple>
-        <output id="output" name="output"></output>
+    <form id="writeForm" name="writeForm" enctype="multipart/form-data">
+<!--        <input id="file" type="file" name="file" accept="image/*" multiple>-->
+<!--        <output id="output" name="output"></output>-->
+        <main class="container">
+            <label class="label" id="label" for="input">
+                <div class="inner" id="inner">드래그하거나 클릭해서 업로드</div>
+            </label>
+            <input id="input" class="input" name="file" accept="image/*" type="file" required="true" multiple="true" hidden="true">
+            <p class="preview-title">미리보기</p>
+            <div class="preview" id="preview"></div>
+        </main>
         <p>
             <label id="title_label">제목</label>
         </p>
@@ -30,10 +38,11 @@
             <textarea id="content" name="content" autocomplete="off" required></textarea>
         </p>
         <input type="hidden" id="boardType" name="boardType" th:value="${boardType}">
-        <button id="register_btn"><span>등록하기</span></button>
+        <button type="button" id="register_btn" class="register_btn"><span>등록하기</span></button>
     </form>
 </div>
 <script th:src="@{/js/logout.js}"></script>
+<script th:src="@{/js/dragAndDrop.js}"></script>
 </body>
 </html>
 <script>
@@ -62,9 +71,52 @@
         else $('#logout').hide();
     });
 
-    document.getElementById('file').addEventListener('input', (event) => {
-        const files = event.target.files;
-        output.textContent = Array.from(files).map(file => file.name).join('\n');
-    })
+<!--    document.getElementById('file').addEventListener('input', (event) => {-->
+<!--        const files = event.target.files;-->
+<!--        output.textContent = Array.from(files).map(file => file.name).join('\n');-->
+<!--    })-->
+
+<!--    const attachedFile = [];-->
+
+<!--    function isPresent(f) {-->
+<!--        for (let i = 0; i < attachedFile.length; i++) {-->
+<!--            if( f.name == attachedFile[i].name ) {-->
+<!--                return true;-->
+<!--            }-->
+<!--            return false;-->
+<!--        }-->
+<!--    }-->
+
+
+    const register = document.getElementById('register_btn');
+    register.addEventListener('click', createForm, false);
+
+    function createForm() {
+        var data = {
+            title : $("#title").val(),
+            content : $("#content").val(),
+            boardType : $("#boardType").val()
+        }
+        formData.append("info", new Blob([JSON.stringify(data)], {type: "application/json"}));
+
+        $.ajax ({
+            type: "POST",
+            url: "/newBoard",
+            data : formData,
+            contentType : false,
+            processData : false,
+            success : function(dataType) {
+                alert("게시글 작성 성공");
+                location.replace("/boards?boardType=" + dataType.data);
+            }, error : function(data) {
+                alert("에러 발생");
+            }
+        });
+    }
+
+
+
+
+
 
 </script>
