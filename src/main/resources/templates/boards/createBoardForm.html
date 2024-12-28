@@ -25,6 +25,10 @@
             <p class="preview-title">미리보기</p>
             <div class="preview" id="preview"></div>
         </main>
+        <div class="updateImg">
+            <label>최대 6개 이미지를 업로드 가능</label>
+            <button type="button" id="updateImg">이미지 수정 삭제</button>
+        </div>
         <p>
             <label id="title_label">제목</label>
         </p>
@@ -71,7 +75,9 @@
         else $('#logout').hide();
     });
 
-<!--    document.getElementById('file').addEventListener('input', (event) => {-->
+
+
+    <!--    document.getElementById('file').addEventListener('input', (event) => {-->
 <!--        const files = event.target.files;-->
 <!--        output.textContent = Array.from(files).map(file => file.name).join('\n');-->
 <!--    })-->
@@ -92,6 +98,13 @@
     register.addEventListener('click', createForm, false);
 
     function createForm() {
+        const preview = document.querySelector(".preview").children;
+        for(const element of preview) {
+            const a = element.id;
+            for(const file of arr) {
+                if (file.name == a) formData.append('file', file);
+            }
+        }
         var data = {
             title : $("#title").val(),
             content : $("#content").val(),
@@ -113,10 +126,14 @@
             }
         });
     }
-
-
-
-
-
-
+<!--    base64 to blob-->
+<!--    function abc(base64String) {-->
+<!--        const binaryString = atob(base64String.split(",")[1]);-->
+<!--        const arrayBuffer = new ArrayBuffer(binaryString.length);-->
+<!--        const view = new Uint8Array(arrayBuffer);-->
+<!--        for (let i = 0; i < binaryString.length; i++) {-->
+<!--            view[i] = binaryString.charCodeAt(i) & 0xff;-->
+<!--        }-->
+<!--        return new Blob([arrayBuffer], { type: "image/png" })-->
+<!--    }-->
 </script>

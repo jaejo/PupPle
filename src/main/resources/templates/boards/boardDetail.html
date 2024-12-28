@@ -38,7 +38,7 @@
             <div class="images" th:if="${files.fileName != ''}">
                 <div th:each="file : ${#strings.setSplit(files.fileName, ',')}">
                     <div class="imageDetail" th:if="${#strings.trim(file) != ''}">
-                        <img th:src="@{|/uploadImage/${boardType}/${#strings.trim(file)}|}" width="100" height="100" alt="없음">
+                        <img th:src="@{|/uploadImage/${boardType}/${#strings.trim(file)}|}" width="148" height="200" alt="없음">
                     </div>
                 </div>
             </div>

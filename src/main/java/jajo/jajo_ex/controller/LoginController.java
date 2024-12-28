@@ -21,6 +21,7 @@ public class LoginController {
     @GetMapping("/login")
     public String loginForm(HttpServletRequest request) {
         String uri = request.getHeader("Referer");
+        //login 페이지에서 로그인할 때 로그인으로 감
         request.getSession().setAttribute("prevPage", uri);
         return "members/checkLogin";
     }
