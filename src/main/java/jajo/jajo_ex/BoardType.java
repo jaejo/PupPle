@@ -4,7 +4,8 @@ public enum BoardType implements CodedEnum<Integer> {
     hospital(100),
     place(200),
     product(300),
-    free(400);
+    recommend(400),
+    free(500);
 
     private final int code;
 

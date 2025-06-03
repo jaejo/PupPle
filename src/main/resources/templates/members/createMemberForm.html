@@ -106,7 +106,7 @@
         }
         var idReg = /^[a-z]+[a-z0-9]{5,19}$/g;
         if (!idReg.test(id)) {
-            showErrorMsg(oMsg, "6~20자의 영문 소문자로 시작이 가능함");
+            showErrorMsg(oMsg, "6~10자의 영문 소문자로 시작이 가능함");
             setFocusToInputObject(oInput);
             return false;
         }

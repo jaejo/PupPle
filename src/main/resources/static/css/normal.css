@@ -197,11 +197,23 @@ b {
     margin : auto;
 }
 
-.ctrl_btn {
+/* .ctrl_btn {
     border : 1px solid black;
     margin : 1px;
     padding : 10px;
     text-align: center;
+} */
+
+.ctrl_btn {
+    border : 1px solid black;
+    width : 75%;
+    text-align: center;
+    margin : 0 auto;
+    display : flex;
+    justify-content : center;
+    align-items : center;
+    padding-top: 10px;
+    padding-bottom: 10px;
 }
 
 .ctrl_btn_child {
@@ -294,19 +306,9 @@ b {
     width: 75%;
     height : 100%;
     padding-left : 20px;
+    font-family : Ubuntu;
 }
-.ctrl_btn {
-    border : 1px solid black;
-    width : 75%;
-    max-width : 75%;
-    padding : 10px;
-    text-align: center;
-    margin : 0 auto;
-    display : flex;
-    justify-content : center;
-    align-items : center;
-}
-
+/*
 .images {
     width : 75%;
     max-width : 75%;
@@ -319,6 +321,28 @@ b {
     align-items : center;
     border : 1px solid black;
     margin-bottom : 10px;
+}
+*/
+
+/*updateBoard */
+.image_area {
+    width : 75%;
+    margin : 0 auto;
+    margin-bottom : 5px;
+}
+
+.images {
+  width: 73%;
+  margin : 0 auto;
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 16px;
+  padding: 18px;
+  margin-bottom: 16px;
+  border-radius: 8px;
+  align-items: center;
+  height: 200px;
+  border : 1px solid black;
 }
 
 .imageDetail {
@@ -342,9 +366,16 @@ table { border-collapse: collapse; }
 tr {
     border-bottom : 1px solid;
 }
+.comment {
+  width : 75%;
+  margin : 0 auto;
+}
 .comment_label {
   width : 75%;
   margin : 0 auto;
+}
+.comment_table {
+  width : 100%;
 }
 .createCommentItemDetail {
   width : 75%;
@@ -395,9 +426,11 @@ tr {
 .formDetail {
     border: 1px solid;
     width: 75%;
-    height: 425px;
+    /* height: 425px; */
+    height: 70%;
     margin: 0 auto;
-    line-height: 70px;
+    margin-bottom: 10px;
+    /* line-height: 70px; */
 }
 .button_area {
     text-align: center;
@@ -424,6 +457,7 @@ tr {
 .content_area textarea {
     width : 75%;
     height : 300px;
+    font-family : Ubuntu;
 }
 
 /* checkLogin.html */
@@ -553,6 +587,12 @@ tr {
   font-size: 32px;
   margin-bottom: 8px;
 }
+.preview_information {
+    text-align: right;
+    font-weight: bold;
+    font-size: 15px;
+    color: red;
+}
 
 .preview {
   display: grid;
@@ -573,7 +613,12 @@ tr {
   object-fit: cover;
   border-radius: 8px;
 }
-
+.updateImg {
+    margin: 0 auto;
+    width : 75%;
+    text-align: center;
+}
+/*
 .updateImg {
     width: clamp(50%, 150px, 70%);
     border-top: dashed 1px gray;
@@ -589,3 +634,4 @@ tr {
     color: red;
     font-size: 20px;
 }
+*/

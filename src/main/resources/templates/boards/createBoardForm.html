@@ -23,10 +23,13 @@
             </label>
             <input id="input" class="input" name="file" accept="image/*" type="file" required="true" multiple="true" hidden="true">
             <p class="preview-title">미리보기</p>
+            <div class="preview_information">
+                <!-- &#10; 줄 넘기기 -->
+                <p title="1.최대 6개 이미지 업로드 가능&#10;2.첫번째 사진이 대표 이미지&#10;3.이미지를 더블 클릭으로 삭제 가능&#10;4.드래그하여 이미지 순서 변경 가능">참고 사항</p>
+            </div>
             <div class="preview" id="preview"></div>
         </main>
         <div class="updateImg">
-            <label>최대 6개 이미지를 업로드 가능</label>
             <button type="button" id="updateImg">이미지 수정 삭제</button>
         </div>
         <p>

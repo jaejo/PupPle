@@ -184,4 +184,5 @@ class MemberServiceIntegrationTest {
         List<BoardFile> boardFile = boardFileService.findByBoard(no);
 
     }
+
 }
