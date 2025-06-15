@@ -114,11 +114,13 @@ updateImg.addEventListener('click', moveImg);
 //preview.addEventListener('click', moveImg);
 
 function moveImg() {
+    /* createBoardForm */
     const draggables = document.querySelectorAll(".embed-img");
     const containers = document.querySelectorAll(".preview");
 
     draggables.forEach(draggable => {
         const parent = draggable.closest('.container-img');
+
         draggable.addEventListener("dragstart", () => {
             draggable.classList.add("dragging");
         });
@@ -172,5 +174,3 @@ function getDragAfterElement(container, x) {
         { offset: Number.NEGATIVE_INFINITY },
     ).element;
 }
-
-

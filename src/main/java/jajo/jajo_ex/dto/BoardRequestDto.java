@@ -21,8 +21,8 @@ public class BoardRequestDto {
     private LocalDateTime modifiedAt;
     private Member member;
     private BoardType boardType;
-    private String deleteFileName;
-    private String remainFileName;
+//    private String deleteFileName;
+//    private String remainFileName;
 
     public Board toEntity(){
         return Board.builder()

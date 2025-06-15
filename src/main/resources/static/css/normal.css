@@ -339,6 +339,7 @@ b {
   gap: 16px;
   padding: 18px;
   margin-bottom: 16px;
+  margin-top: 10px;
   border-radius: 8px;
   align-items: center;
   height: 200px;
@@ -353,6 +354,16 @@ b {
 
 .removeImage {
     text-align : center;
+}
+
+.originalImg {
+    width : 75%;
+    margin : 0 auto;
+    display: flex;
+    text-align: center;
+    font-weight: bold;
+    font-size: 15px;
+    color: red;
 }
 
 /* 테이블 */
@@ -605,6 +616,21 @@ tr {
   background-color: var(--bgColor);
   height: 200px;
 }
+.updateImages {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 16px;
+  padding: 16px;
+  margin-bottom: 16px;
+  border-radius: 8px;
+  align-items: center;
+  background-color: var(--bgColor);
+  height: 200px;
+}
+
+.imageDetail.embed-img {
+    display: none;
+}
 
 .embed-img{
   width: 100%;
@@ -613,6 +639,7 @@ tr {
   object-fit: cover;
   border-radius: 8px;
 }
+
 .updateImg {
     margin: 0 auto;
     width : 75%;

@@ -130,64 +130,64 @@ public class BoardController {
         return "boards/updateBoard";
     }
 
-    //formData로 전송하여 @RequestPart로 이미지와 Dto를 분리
-    @PostMapping("/updateForm")
-    @ResponseBody
-    @Transactional
-    public ResponseDto<?> updateForm(@SessionAttribute(required = false, name="principal") Member principal,
-                                    @RequestPart(value="info") BoardRequestDto boardRequestDto, Model model,
-                                     @RequestPart(value="file", required = false) MultipartFile[] file) throws IOException{
-        if (principal != null) model.addAttribute("member", principal);
-
-        //체크한 파일 삭제
-        String removeFile = boardRequestDto.getDeleteFileName();
-
-        for (String removeFileName : removeFile.split(",")) {
-            removeFileName = removeFileName.trim();
-            if (removeFileName != "") {
-                String DeleteFileDir = "C:\\Users\\LEEJAEJOON\\Documents\\PupPle\\src\\main\\resources\\static\\uploadImage\\";
-                DeleteFileDir += boardRequestDto.getBoardType() + "\\" + removeFileName;
-                File DeleteFile = new File(DeleteFileDir);
-                if (DeleteFile.delete()) {
-                   System.out.println(removeFileName + ": 삭제 완료");
-                }
-            }
-        }
-
-        ZonedDateTime zdateTime = ZonedDateTime.now();
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss");
-        String formatedNow = zdateTime.format(formatter);
-        String FileDir = "C:\\Users\\LEEJAEJOON\\Documents\\PupPle\\src\\main\\resources\\static\\uploadImage\\";
-        FileDir += boardRequestDto.getBoardType() + "\\";
-
-        //기존의 이미지 파일
-        String allFile = boardRequestDto.getRemainFileName();
-
-        //새로 들어온 파일 생성 및 DB 저장
-        if (file != null) {
-            for (MultipartFile f : file) {
-                if (!f.isEmpty()) {
-                    String userFileName = f.getOriginalFilename();
-                    String fileExtension = userFileName.substring(userFileName.lastIndexOf(".") + 1);
-                    userFileName = userFileName.substring(0, userFileName.lastIndexOf("."));
-                    String uploadFileName = formatedNow + "_" + userFileName + "." + fileExtension;
-                    allFile += uploadFileName + ", ";
-                    File saveFile = new File(FileDir, uploadFileName);
-                    f.transferTo(saveFile);
-                }
-            }
-        }
-
-        Board board = boardService.isPresentBoard(boardRequestDto.getNo());
-
-        board.update(boardRequestDto);
-
-        boardFileService.updateFileName(boardRequestDto.getNo(), allFile);
-
-        boardService.save(board);
-
-        return ResponseDto.success(board.getBoardType());
-    }
+//    //formData로 전송하여 @RequestPart로 이미지와 Dto를 분리
+//    @PostMapping("/updateForm")
+//    @ResponseBody
+//    @Transactional
+//    public ResponseDto<?> updateForm(@SessionAttribute(required = false, name="principal") Member principal,
+//                                    @RequestPart(value="info") BoardRequestDto boardRequestDto, Model model,
+//                                     @RequestPart(value="file", required = false) MultipartFile[] file) throws IOException{
+//        if (principal != null) model.addAttribute("member", principal);
+//
+//        //체크한 파일 삭제
+//        String removeFile = boardRequestDto.getDeleteFileName();
+//
+//        for (String removeFileName : removeFile.split(",")) {
+//            removeFileName = removeFileName.trim();
+//            if (removeFileName != "") {
+//                String DeleteFileDir = "C:\\Users\\LEEJAEJOON\\Documents\\PupPle\\src\\main\\resources\\static\\uploadImage\\";
+//                DeleteFileDir += boardRequestDto.getBoardType() + "\\" + removeFileName;
+//                File DeleteFile = new File(DeleteFileDir);
+//                if (DeleteFile.delete()) {
+//                   System.out.println(removeFileName + ": 삭제 완료");
+//                }
+//            }
+//        }
+//
+//        ZonedDateTime zdateTime = ZonedDateTime.now();
+//        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss");
+//        String formatedNow = zdateTime.format(formatter);
+//        String FileDir = "C:\\Users\\LEEJAEJOON\\Documents\\PupPle\\src\\main\\resources\\static\\uploadImage\\";
+//        FileDir += boardRequestDto.getBoardType() + "\\";
+//
+//        //기존의 이미지 파일
+//        String allFile = boardRequestDto.getRemainFileName();
+//
+//        //새로 들어온 파일 생성 및 DB 저장
+//        if (file != null) {
+//            for (MultipartFile f : file) {
+//                if (!f.isEmpty()) {
+//                    String userFileName = f.getOriginalFilename();
+//                    String fileExtension = userFileName.substring(userFileName.lastIndexOf(".") + 1);
+//                    userFileName = userFileName.substring(0, userFileName.lastIndexOf("."));
+//                    String uploadFileName = formatedNow + "_" + userFileName + "." + fileExtension;
+//                    allFile += uploadFileName + ", ";
+//                    File saveFile = new File(FileDir, uploadFileName);
+//                    f.transferTo(saveFile);
+//                }
+//            }
+//        }
+//
+//        Board board = boardService.isPresentBoard(boardRequestDto.getNo());
+//
+//        board.update(boardRequestDto);
+//
+//        boardFileService.updateFileName(boardRequestDto.getNo(), allFile);
+//
+//        boardService.save(board);
+//
+//        return ResponseDto.success(board.getBoardType());
+//    }
 
     @PostMapping("/newBoard")
     @ResponseBody
@@ -235,4 +235,81 @@ public class BoardController {
         return ResponseDto.success(boardRequestDto.getBoardType());
     }
 
+    //formData로 전송하여 @RequestPart로 이미지와 Dto를 분리
+    @PostMapping("/updateForm")
+    @ResponseBody
+    @Transactional
+    public ResponseDto<?> updateForm(@SessionAttribute(required = false, name="principal") Member principal,
+                                     @RequestPart(value="info") BoardRequestDto boardRequestDto, Model model,
+                                     @RequestPart(value="file", required = false) MultipartFile[] file) throws IOException{
+        if (principal != null) model.addAttribute("member", principal);
+
+        List<BoardFile> boardFile = boardFileService.findByBoard(boardRequestDto.getNo());
+
+        String removeFile = boardFile.get(0).getFileName();
+
+        for (String removeFileName : removeFile.split(",")) {
+            removeFileName = removeFileName.trim();
+            if (removeFileName != "") {
+                String DeleteFileDir = "C:\\Users\\LEEJAEJOON\\Documents\\PupPle\\src\\main\\resources\\static\\uploadImage\\";
+                DeleteFileDir += boardRequestDto.getBoardType() + "\\" + removeFileName;
+                File DeleteFile = new File(DeleteFileDir);
+                if (DeleteFile.delete()) {
+                    System.out.println(removeFileName + ": 삭제 완료");
+                }
+            }
+        }
+
+        //체크한 파일 삭제
+//        String removeFile = boardRequestDto.getDeleteFileName();
+//
+//        for (String removeFileName : removeFile.split(",")) {
+//            removeFileName = removeFileName.trim();
+//            if (removeFileName != "") {
+//                String DeleteFileDir = "C:\\Users\\LEEJAEJOON\\Documents\\PupPle\\src\\main\\resources\\static\\uploadImage\\";
+//                DeleteFileDir += boardRequestDto.getBoardType() + "\\" + removeFileName;
+//                File DeleteFile = new File(DeleteFileDir);
+//                if (DeleteFile.delete()) {
+//                    System.out.println(removeFileName + ": 삭제 완료");
+//                }
+//            }
+//        }
+
+        ZonedDateTime zdateTime = ZonedDateTime.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss");
+        String formatedNow = zdateTime.format(formatter);
+        String FileDir = "C:\\Users\\LEEJAEJOON\\Documents\\PupPle\\src\\main\\resources\\static\\uploadImage\\";
+        FileDir += boardRequestDto.getBoardType() + "\\";
+
+        //DB에 저장될 이미지 파일 이름들
+        String allFile = "";
+
+        //새로 들어온 파일 생성 및 DB 저장
+        if (file != null) {
+            for (MultipartFile f : file) {
+                if (!f.isEmpty()) {
+                    String userFileName = f.getOriginalFilename();
+
+                    String fileExtension = userFileName.substring(userFileName.lastIndexOf(".") + 1);
+                    userFileName = userFileName.substring(0, userFileName.lastIndexOf("."));
+                    String uploadFileName = formatedNow + "_" + userFileName + "." + fileExtension;
+
+                    allFile += uploadFileName + ", ";
+                    File saveFile = new File(FileDir, uploadFileName);
+                    f.transferTo(saveFile);
+                }
+            }
+        }
+
+        Board board = boardService.isPresentBoard(boardRequestDto.getNo());
+
+        board.update(boardRequestDto);
+
+        boardFileService.updateFileName(boardRequestDto.getNo(), allFile);
+
+        boardService.save(board);
+
+        return ResponseDto.success(board.getBoardType());
+
+    }
 }
