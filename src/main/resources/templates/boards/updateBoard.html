@@ -65,7 +65,7 @@
         <div class="images" th:if="${files.fileName != ''}">
             <div th:each="file : ${#strings.setSplit(files.fileName, ',')}">
                 <div class="imageDetail" th:if="${#strings.trim(file) != ''}">
-                    <img class="embed-img" th:src="@{|/uploadImage/${boardType}/${#strings.trim(file)}|}" width="158" height="200" alt="없음">
+                    <img class="embed-img" th:src="@{|/uploadImage/${boardType}/${#strings.trim(file)}|}" width="156" height="200" alt="없음">
 <!--                    <div class="removeImage">-->
 <!--                        <input type="checkbox" name="images" th:value="${#strings.trim(file)}">-->
 <!--                    </div>-->
@@ -109,7 +109,9 @@
 	    else $('#logout').hide();
 	});
 
-
+    document.addEventListener("DOMContentLoaded", function() {
+        mouseEvent();
+    });
 
 	const register = document.getElementById('modify_btn');
     register.addEventListener('click', updateForm, false);

@@ -347,9 +347,14 @@ b {
 }
 
 .imageDetail {
+    /*
     margin-right : 5px;
     display : flex;
     flex-direction : column;
+    */
+    width: 156px;
+    height: 200px;
+    overflow: hidden;
 }
 
 .removeImage {
@@ -616,28 +621,31 @@ tr {
   background-color: var(--bgColor);
   height: 200px;
 }
+/*
 .updateImages {
-  display: grid;
-  grid-template-columns: repeat(6, 1fr);
-  gap: 16px;
-  padding: 16px;
-  margin-bottom: 16px;
-  border-radius: 8px;
-  align-items: center;
-  background-color: var(--bgColor);
-  height: 200px;
+   display: grid;
+   grid-template-columns: repeat(6, 1fr);
+   gap: 16px;
+   padding: 16px;
+   margin-bottom: 16px;
+   border-radius: 8px;
+   align-items: center;
+   background-color: var(--bgColor);
+   height: 200px;
 }
-
+*/
+/*
 .imageDetail.embed-img {
     display: none;
 }
-
-.embed-img{
+*/
+.embed-img {
   width: 100%;
-  height: 100%;
+  height : 100%;
   object-position: center;
   object-fit: cover;
   border-radius: 8px;
+  display: block;
 }
 
 .updateImg {
