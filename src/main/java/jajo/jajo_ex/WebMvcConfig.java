@@ -15,7 +15,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(new LoginInterceptor())
-                .addPathPatterns("/detail", "/newBoard", "/updateBoard", "/updateForm",
+                .addPathPatterns("/detail", "/newBoard", "/newBoardV2", "/updateBoard", "/updateForm",
                         "/createComment", "/updateComment", "/deleteComment",
                         "/myPage")
                 .excludePathPatterns("/", "/boards", "/login");

@@ -197,6 +197,30 @@ b {
     margin : auto;
 }
 
+/* boardDetail - enlargeImage */
+.clickable-image {
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 999;
+    padding-top: 60px;
+    left: 0; top: 0;
+    width: 100%; height: 100%;
+    background-color: rgba(0, 0, 0, 0.9);
+    text-align: center
+}
+
+.modal img {
+    max-width: 80%;
+    max-height: 80%;
+    boarder-radius: 10px;
+}
+/* enlargeImage End */
+
 /* .ctrl_btn {
     border : 1px solid black;
     margin : 1px;
@@ -565,7 +589,7 @@ tr {
 /* createBoardForm dragAndDrop  */
 
 .container {
-  width: clamp(0px, 100%, 1000px);
+  width: 75%;
   margin: 32px auto;
   text-align: center;
 }
@@ -621,6 +645,23 @@ tr {
   background-color: var(--bgColor);
   height: 200px;
 }
+
+.preview img.thumbnail {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    border-radius: 8px;
+    display: block;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.2);
+    cursor: pointer;
+    transition: transform 0.2s ease;
+}
+
+.preview img.thumbnail:hover {
+  transform: scale(1.05);
+}
+
 /*
 .updateImages {
    display: grid;
@@ -646,6 +687,13 @@ tr {
   object-fit: cover;
   border-radius: 8px;
   display: block;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.2);
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.embed-img:hover {
+    transform: scale(1.05);
 }
 
 .updateImg {
@@ -670,3 +718,41 @@ tr {
     font-size: 20px;
 }
 */
+
+/* createBoardFormV2 */
+
+.createBoardTitle {
+    margin: 0 auto;
+    width: 75%;
+    margin-bottom: 5px;
+}
+.board_title {
+    width: 100%;
+    height: 35px;
+}
+
+.ql-toolbar.ql-snow {
+    width: 75%;
+    margin: 0 auto;
+}
+.ql-container.ql-snow {
+    width: 75%;
+    margin: 0 auto;
+}
+
+.save-delta {
+    width: 75%;
+    margin: 0 auto;
+    padding-top: 5px;
+}
+
+.save-delta-button {
+    width: 30%;
+}
+
+.ql-editor::before {
+    color: rgb(220, 20, 60);
+    font-style: italic;
+    font-size: 20px;
+    font-weight: bold;
+}

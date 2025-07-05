@@ -46,6 +46,15 @@ public class BoardController {
         model.addAttribute("boardType", boardType);
         return "boards/createBoardForm";
     }
+
+    @GetMapping("/newBoardV2")
+    public String createBoardFormV2(@SessionAttribute(required = false, name="principal") Member principal, Model model,
+                                  @RequestParam(name="boardType") BoardType boardType) {
+        if (principal != null) model.addAttribute("member", principal);
+        model.addAttribute("boardType", boardType);
+        return "boards/createBoardFormV2";
+    }
+
     @GetMapping("/boards")
     public String list(@SessionAttribute(required = false, name="principal") Member principal, Model model, PageDto pageDto,
                        @RequestParam(required= false, name="boardType") BoardType boardType,

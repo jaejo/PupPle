@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html xmlns:th="http://thymeleaf.org">
+<link rel="stylesheet" th:href="@{/css/normal.css}">
+<head>
+    <meta charset="UTF-8">
+    <script src="http://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <link href="https://cdn.quilljs.com/1.3.7/quill.snow.css" rel="stylesheet" />
+</head>
+<body>
+<div class="include_wrap" data-include-path="header.html"></div>
+<div th:if="${member != null}">
+    <input type="hidden" id="loginUser" th:value="${member.getUserId()}"></div>
+</div>
+<div class="writeTitle">
+    <h1>글쓰기</h1>
+</div>
+<div class="createBoardTitle">
+    <input type="text" class="board_title" autocomplete="off" placeholder="제목을 입력하세요!" required>
+</div>
+<!-- 툴바 컨테이너 -->
+<div id="toolbar">
+    <select class="ql-font"></select>
+    <select class="ql-size"></select>
+    <button class="ql-bold"></button>
+    <button class="ql-italic"></button>
+    <button class="ql-underline"></button>
+    <button class="ql-strike"></button>
+    <button class="ql-blockquote"></button>
+    <button class="ql-code-block"></button>
+    <button class="ql-script" value="sub"></button>
+    <button class="ql-script" value="super"></button>
+    <button class="ql-header" value="1"></button>
+    <button class="ql-header" value="2"></button>
+    <button class="ql-list" value="ordered"></button>
+    <button class="ql-list" value="bullet"></button>
+    <button class="ql-indent" value="-1"></button>
+    <button class="ql-indent" value="+1"></button>
+    <button class="ql-direction" value="rtl"></button>
+    <select class="ql-align"></select>
+    <select class="ql-color"></select>
+    <select class="ql-background"></select>
+    <button class="ql-link"></button>
+    <button class="ql-image"></button>
+    <button class="ql-video"></button>
+    <button class="ql-clean"></button>
+    <button id="clear-editor">clear</button>
+</div>
+
+<!-- 에디터 본문 -->
+<div id="editor"></div>
+<!-- html을 그대로 전송 시 손실이 발생할 수 있음 -->
+<!--<button id="save-html">HTML 저장</button>-->
+<div class="save-delta">
+    <button id="save-delta" class="save-delta-button">글 저장하기</button>
+</div>
+
+<main class="container">
+    <p title="게시물 대표 이미지" style="text-align: left; font-weight:bold; font-size: 20px;">대표 이미지 선택</p>
+    <label class="label" id="label" for="input">
+        <div class="inner" id="inner">드래그하거나 클릭해서 업로드</div>
+    </label>
+    <input id="input" class="input" name="file" accept="image/*" type="file" required="true" multiple="true" hidden="true">
+    <div class="preview_information">
+        <!-- &#10; 줄 넘기기 -->
+        <p title="1.최대 6개 이미지 업로드 가능&#10;2.첫번째 사진이 대표 이미지&#10;3.이미지를 더블 클릭으로 삭제 가능&#10;4.드래그하여 이미지 순서 변경 가능">참고 사항</p>
+    </div>
+    <div class="preview" id="preview"></div>
+</main>
+
+<input type="hidden" id="boardType" name="boardType" th:value="${boardType}">
+<script th:src="@{/js/logout.js}"></script>
+<script th:src="@{/js/dragAndDrop.js}"></script>
+<script src="https://cdn.quilljs.com/1.3.7/quill.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/quill-image-resize-module@3.0.0/image-resize.min.js"></script>
+<script th:src="@{/js/quillCustom.js}"></script>
+</body>
+</html>
+<script>
+    function includeHtml() {
+        var allElements = $(".include_wrap");
+        Array.prototype.forEach.call(allElements, function(el) {
+            var includePath = el.dataset.includePath;
+
+            if (includePath) {
+                var xhttp = new XMLHttpRequest();
+                xhttp.onreadystatechange = function () {
+                    if (this.readyState == 4 && this.status == 200) {
+                        el.outerHTML = this.responseText;
+                    }
+                };
+                xhttp.open('GET', includePath, false);
+                xhttp.send();
+            }
+        });
+    }
+
+    $(document).ready(function() {
+        includeHtml();
+        var loginUser = document.getElementById('loginUser');
+        if (loginUser != null) $('#login').hide();
+        else $('#logout').hide();
+    });
+</script>

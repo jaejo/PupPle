@@ -74,14 +74,15 @@
     <a th:if="${pageDto.startPage != 1}" th:href="@{/boards(page=${pageDto.startPage - 1})}">$lt;</a>
 
     <th:block th:each="page : ${#numbers.sequence(pageDto.startPage, pageDto.endPage)}">
-        <a th:if="${pageDto.page == page}" th:href="@{/boards(page=${page})}"><b>[[${page}]]</b></a>
-        <a th:unless="${pageDto.page == page}" th:href="@{/boards(page=${page})}">[[${page}]]</a>
+        <a th:if="${pageDto.page == page}" th:href="@{/boards(boardType=${boardType}, page=${page})}"><b>[[${page}]]</b></a>
+        <a th:unless="${pageDto.page == page}" th:href="@{/boards(boardType=${boardType}, page=${page})}">[[${page}]]</a>
     </th:block>
 
     <a th:if="${pageDto.endPage != pageDto.lastPage}" th:href="@{/boards(page=${pageDto.endPage + 1})}"></a>
     >
     <div class="createBtn">
         <button class="create_btn" th:onclick="createBoard([[${boardType}]])">글쓰기</button>
+        <button class="create_btn2" th:onclick="createBoardV2([[${boardType}]])">글쓰기2</button>
     </div>
 </div>
 <div th:unless="!${#lists.isEmpty(boards)}">
@@ -153,5 +154,9 @@
         location.replace(url);
     }
 
+    function createBoardV2(boardType) {
+        var url = "/newBoardV2?boardType=" + boardType;
+        location.replace(url);
+    }
 
 </script>
