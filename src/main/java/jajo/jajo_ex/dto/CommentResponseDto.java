@@ -32,6 +32,7 @@ public class CommentResponseDto {
         this.createdAt = c.getCreatedAt();
         this.modifiedAt = c.getModifiedAt();
         this.parentId = getParentId();
-        this.boardNo = c.getBoard().getNo();
+        // this.boardNo = c.getBoard().getNo();
+        this.boardNo = c.getBoardV2().getNo();
     }
 }

@@ -16,10 +16,16 @@ public class BoardFile {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    private String thumbnail;
+
     private String fileName;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "BOARD_NO")
     private Board board;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "BOARD2_NO")
+    private BoardV2 boardV2;
     
 }

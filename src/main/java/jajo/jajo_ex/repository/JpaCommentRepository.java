@@ -1,6 +1,7 @@
 package jajo.jajo_ex.repository;
 
 import jajo.jajo_ex.domain.Board;
+import jajo.jajo_ex.domain.BoardV2;
 import jajo.jajo_ex.domain.Comment;
 import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
@@ -51,6 +52,14 @@ public class JpaCommentRepository implements CommentRepository{
     @Override
     public List<Comment> findAllByBoard(Board board) {
         String query = "select c from Comment c LEFT JOIN FETCH c.parent l where c.board.no = :no order by c.parent.id asc nulls first, c.createdAt asc";
+        return em.createQuery(query, Comment.class)
+                .setParameter("no", board.getNo())
+                .getResultList();
+    }
+
+    @Override
+    public List<Comment> findAllByBoardV2(BoardV2 board) {
+        String query = "select c from Comment c LEFT JOIN FETCH c.parent l where c.boardV2.no = :no order by c.parent.id asc nulls first, c.createdAt asc";
         return em.createQuery(query, Comment.class)
                 .setParameter("no", board.getNo())
                 .getResultList();

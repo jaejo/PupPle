@@ -2,10 +2,7 @@ package jajo.jajo_ex;
 
 import jajo.jajo_ex.aop.TimeTraceAop;
 import jajo.jajo_ex.repository.*;
-import jajo.jajo_ex.service.BoardFileService;
-import jajo.jajo_ex.service.BoardService;
-import jajo.jajo_ex.service.CommentService;
-import jajo.jajo_ex.service.MemberService;
+import jajo.jajo_ex.service.*;
 import jakarta.persistence.EntityManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -35,6 +32,8 @@ public class SpringConfig {
     }
 
     @Bean
+    public BoardServiceV2 boardServiceV2() {return new BoardServiceV2(boardRepositoryV2());}
+    @Bean
     public CommentService commentService() { return new CommentService(commentRepository());}
 
     @Bean
@@ -59,6 +58,9 @@ public class SpringConfig {
     public BoardRepository boardRepository() {
         return new JpaBoardRepository(em);
     }
+
+    @Bean
+    public BoardRepositoryV2 boardRepositoryV2() {return new JpaBoardRepositoryV2(em);}
 
     @Bean
     public CommentRepository commentRepository() { return new JpaCommentRepository(em); }

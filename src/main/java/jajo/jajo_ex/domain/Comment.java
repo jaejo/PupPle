@@ -16,7 +16,7 @@ import java.util.List;
 @Entity
 public class Comment extends Timestamped {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "Comment_ID")
+    @Column(name = "COMMENT_ID")
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -26,6 +26,10 @@ public class Comment extends Timestamped {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="BOARD_NO")
     private Board board;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name="BOARD2_NO")
+    private BoardV2 boardV2;
 
     private String content;
 

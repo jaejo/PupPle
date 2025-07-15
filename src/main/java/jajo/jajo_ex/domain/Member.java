@@ -29,11 +29,20 @@ public class Member {
 
     @Builder.Default
     @OneToMany(mappedBy = "member", cascade=CascadeType.REMOVE)
+    private List<BoardV2> boardV2s = new ArrayList<>();
+
+    @Builder.Default
+    @OneToMany(mappedBy = "member", cascade=CascadeType.REMOVE)
     private List<Comment> comments = new ArrayList<Comment>();
 
     public void addBoard(Board board){
         this.boards.add(board);
         board.setMember(this);
+    }
+
+    public void addBoardV2(BoardV2 boardv2) {
+        this.boardV2s.add(boardv2);
+        boardv2.setMember(this);
     }
 
     public void addComment(Comment comment) {

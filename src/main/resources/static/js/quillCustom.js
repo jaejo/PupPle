@@ -31,6 +31,7 @@ editorContainer.addEventListener('drop', function (e) {
 
 let previousImages = [];
 
+//preview quill 이미지 동기화
 function syncPreviewWithEditor() {
     const currentContents = quill.getContents();
     const currentImages = [];
@@ -48,6 +49,7 @@ function syncPreviewWithEditor() {
     newImages.forEach(src =>{
         const img = document.createElement("img");
         img.src = src;
+        img.id = "thumbnail";
         img.setAttribute("data-src", src);
         img.classList.add("embed-img");
 
@@ -119,24 +121,113 @@ document.getElementById('clear-editor').addEventListener('click', function() {
 //    console.log('HTML: ', html);
 //});
 
-document.getElementById('save-delta').addEventListener('click', function() {
-    fetch('/newBoardV2', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-            html: quill.root.innerHTML,
-            delta: quill.getContents(),
-            boardType: $("#boardType").val()
-        }),
-    })
-    .then(response => response.json())
-    .then(data => {
-        console.log('저장완료:', data);
-        location.replace("/boards?boardType=" + data.boardType);
-    })
-    .catch(error => {
-        console.log('저장중 오류 발생:', error);
+//document.getElementById('save-delta').addEventListener('click', function() {
+//    fetch('/newBoardV2', {
+//        method: 'POST',
+//        headers: {
+//            'Content-Type': 'application/json',
+//        },
+//        body: JSON.stringify({
+//            html: quill.root.innerHTML,
+//            delta: quill.getContents(),
+//            boardType: $("#boardType").val()
+//        }),
+//    })
+//    .then(response => response.json())
+//    .then(data => {
+//        console.log('저장완료:', data);
+//        location.replace("/boards?boardType=" + data.boardType);
+//    })
+//    .catch(error => {
+//        console.log('저장중 오류 발생:', error);
+//    });
+//});
+
+function base64ToFile(base64, filename) {
+    const arr = base64.split(',');
+    const mime = arr[0].match(/:(.*?);/)[1];
+    const bstr = atob(arr[1]);
+    let n = bstr.length;
+    const u8arr = new Uint8Array(n);
+
+    while(n--) {
+        u8arr[n] = bstr.charCodeAt(n);
+    }
+
+    return new File([u8arr], filename, { type: mime });
+}
+
+function getImageExtension(base64) {
+  const match = base64.match(/^data:image\/([a-zA-Z0-9+]+);base64,/);
+
+  if (match && match[1]) {
+    return match[1].toLowerCase(); // 예: "png", "jpeg", "webp"
+  }
+  return null;
+}
+
+function extractImagesFromQuill() {
+    const delta = quill.getContents();
+    console.log(delta);
+    const images = [];
+
+    let imageIndex = 0;
+    delta.ops.forEach(op => {
+        if(op.insert && op.insert.image && op.insert.image.startsWith("data:image")) {
+            const ext = getImageExtension(op.insert.image);
+            const filename = `image_${imageIndex++}` + `.` + ext;
+            const file = base64ToFile(op.insert.image, filename);
+            images.push(file);
+        }
     });
+
+    return images;
+}
+
+function getThumbnail() {
+    const thumbnail = document.getElementById('thumbnail');
+    const src = thumbnail.src;
+    const ext = getImageExtension(src);
+    const filename = `thumbnail` + `.` + ext;
+    const file = base64ToFile(src, filename);
+
+    return file;
+}
+
+//delta 확인용
+document.getElementById('save-delta').addEventListener('click', function () {
+    const delta = quill.getContents();
+    document.getElementById('output').innerText = JSON.stringify(delta, null, 2);
+    console.log('Delta:', delta);
 });
+
+//document.getElementById('save-delta').addEventListener('click', function() {
+//    const images = extractImagesFromQuill();
+//
+//    images.forEach((file, i) => {
+//        formData.append('file', file);
+//    });
+//
+//    formData.append('thumbnail', getThumbnail());
+//
+//    var data = {
+//        title : $("#title").val(),
+//        delta : quill.getContents(),
+//        boardType : $("#boardType").val()
+//    }
+//
+//    formData.append("info", new Blob([JSON.stringify(data)], {type: "application/json"}));
+//
+//    fetch('/newBoardV2', {
+//        method: 'POST',
+//        body: formData,
+//    })
+//    .then(response => response.json())
+//    .then(data => {
+//        console.log('저장완료:', data);
+//        location.replace("/boards?boardType=" + data.boardType);
+//    })
+//    .catch(error => {
+//        console.log('저장중 오류 발생:', error);
+//    });
+//});

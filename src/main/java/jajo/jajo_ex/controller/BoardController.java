@@ -55,38 +55,38 @@ public class BoardController {
         return "boards/createBoardFormV2";
     }
 
-    @GetMapping("/boards")
-    public String list(@SessionAttribute(required = false, name="principal") Member principal, Model model, PageDto pageDto,
-                       @RequestParam(required= false, name="boardType") BoardType boardType,
-                       @RequestParam(value="hint", required = false) String hint,
-                       @RequestParam(value="searchTarget", required = false) String obj) {
-
-        model.addAttribute("boardType", boardType);
-
-
-        if (principal != null) model.addAttribute("member", principal);
-        model.addAttribute("boardFile", boardFileService.findAll());
-        if( (hint == null || hint.isEmpty())) {
-            // 추천순 검색
-            if (Objects.equals(obj, "targetRecommend")) model.addAttribute("boards", boardService.searchByRecommend(pageDto, boardType));
-            else model.addAttribute("boards", boardService.selectBoardList(pageDto, boardType));
-        }
-        else {
-            // 내용기반 검색
-            if (obj.equals("targetContent")) {
-                model.addAttribute("boards", boardService.searchByHint(pageDto, hint, boardType));
-            }
-            // 유저기반 검색
-            if (obj.equals("targetUser")) {
-                model.addAttribute("boards", boardService.searchByUser(pageDto, hint, boardType));
-            }
-            // 제목기반 검색
-            if (obj.equals("targetTitle")) {
-                model.addAttribute("boards", boardService.searchByTitle(pageDto, hint, boardType));
-            }
-        }
-        return "boards/boardList";
-    }
+//    @GetMapping("/boards")
+//    public String list(@SessionAttribute(required = false, name="principal") Member principal, Model model, PageDto pageDto,
+//                       @RequestParam(required= false, name="boardType") BoardType boardType,
+//                       @RequestParam(value="hint", required = false) String hint,
+//                       @RequestParam(value="searchTarget", required = false) String obj) {
+//
+//        model.addAttribute("boardType", boardType);
+//
+//
+//        if (principal != null) model.addAttribute("member", principal);
+//        model.addAttribute("boardFile", boardFileService.findAll());
+//        if( (hint == null || hint.isEmpty())) {
+//            // 추천순 검색
+//            if (Objects.equals(obj, "targetRecommend")) model.addAttribute("boards", boardService.searchByRecommend(pageDto, boardType));
+//            else model.addAttribute("boards", boardService.selectBoardList(pageDto, boardType));
+//        }
+//        else {
+//            // 내용기반 검색
+//            if (obj.equals("targetContent")) {
+//                model.addAttribute("boards", boardService.searchByHint(pageDto, hint, boardType));
+//            }
+//            // 유저기반 검색
+//            if (obj.equals("targetUser")) {
+//                model.addAttribute("boards", boardService.searchByUser(pageDto, hint, boardType));
+//            }
+//            // 제목기반 검색
+//            if (obj.equals("targetTitle")) {
+//                model.addAttribute("boards", boardService.searchByTitle(pageDto, hint, boardType));
+//            }
+//        }
+//        return "boards/boardList";
+//    }
 
     @Transactional
     public ResponseDto<?> getAllCommentsByBoard(Long no) {
@@ -109,20 +109,20 @@ public class BoardController {
         return ResponseDto.success(commentResponseDtoList);
     }
 
-    @GetMapping("/detail")
-    public String detail(@RequestParam("no") Long no, @RequestParam("boardType") BoardType boardType,
-                         @SessionAttribute(required = false, name="principal") Member principal, Model model, HttpServletRequest request) {
-        if (principal != null) model.addAttribute("member", principal);
-
-        Board board = boardService.findNo(no);
-        List<Comment> comment = commentService.findBoardNo(no);
-        model.addAttribute("board", board);
-        model.addAttribute("comments", getAllCommentsByBoard(no).getData());
-        model.addAttribute("boardFile", boardFileService.findByBoard(no));
-        model.addAttribute("boardType", boardType);
-
-        return "boards/boardDetail";
-    }
+//    @GetMapping("/detail")
+//    public String detail(@RequestParam("no") Long no, @RequestParam("boardType") BoardType boardType,
+//                         @SessionAttribute(required = false, name="principal") Member principal, Model model, HttpServletRequest request) {
+//        if (principal != null) model.addAttribute("member", principal);
+//
+//        Board board = boardService.findNo(no);
+//        List<Comment> comment = commentService.findBoardNo(no);
+//        model.addAttribute("board", board);
+//        model.addAttribute("comments", getAllCommentsByBoard(no).getData());
+//        model.addAttribute("boardFile", boardFileService.findByBoard(no));
+//        model.addAttribute("boardType", boardType);
+//
+//        return "boards/boardDetail";
+//    }
     @PostMapping("/updateBoard")
     public String update(@RequestParam("no") Long no,
                          @RequestParam("title") String title,
@@ -205,7 +205,7 @@ public class BoardController {
                        @RequestPart(value="info") BoardRequestDto boardRequestDto,
                        @RequestPart(value="file", required = false) MultipartFile[] file) throws IOException {
         if (principal != null) model.addAttribute("member", principal);
-        System.out.println(file);
+
         Member member = memberService.findById(principal);
         String allFile = "";
         ZonedDateTime zdateTime = ZonedDateTime.now();

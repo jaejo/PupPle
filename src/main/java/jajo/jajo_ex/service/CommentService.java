@@ -1,6 +1,7 @@
 package jajo.jajo_ex.service;
 
 import jajo.jajo_ex.domain.Board;
+import jajo.jajo_ex.domain.BoardV2;
 import jajo.jajo_ex.domain.Comment;
 import jajo.jajo_ex.repository.CommentRepository;
 import jakarta.transaction.Transactional;
@@ -38,4 +39,6 @@ public class CommentService {
     public List<Comment> findAllByBoard(Board board) {
         return commentRepository.findAllByBoard(board);
     }
+
+    public List<Comment> findAllByBoardV2(BoardV2 board) { return commentRepository.findAllByBoardV2(board); }
 }

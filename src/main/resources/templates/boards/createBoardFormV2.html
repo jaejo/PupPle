@@ -15,7 +15,7 @@
     <h1>글쓰기</h1>
 </div>
 <div class="createBoardTitle">
-    <input type="text" class="board_title" autocomplete="off" placeholder="제목을 입력하세요!" required>
+    <input type="text" id="title" name="title" class="board_title" autocomplete="off" placeholder="제목을 입력하세요!" required>
 </div>
 <!-- 툴바 컨테이너 -->
 <div id="toolbar">
@@ -73,6 +73,10 @@
 <script src="https://cdn.quilljs.com/1.3.7/quill.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/quill-image-resize-module@3.0.0/image-resize.min.js"></script>
 <script th:src="@{/js/quillCustom.js}"></script>
+
+<!--delta확인용-->
+<pre id="output"></pre>
+
 </body>
 </html>
 <script>
