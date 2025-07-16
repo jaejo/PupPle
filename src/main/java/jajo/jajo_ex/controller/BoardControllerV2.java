@@ -1,11 +1,14 @@
 package jajo.jajo_ex.controller;
 
 import jajo.jajo_ex.BoardType;
+import jajo.jajo_ex.domain.Board;
 import jajo.jajo_ex.domain.BoardFile;
 import jajo.jajo_ex.domain.BoardV2;
 import jajo.jajo_ex.domain.Member;
+import jajo.jajo_ex.dto.BoardRequestDto;
 import jajo.jajo_ex.dto.PageDto;
 import jajo.jajo_ex.dto.QuillDataDTO;
+import jajo.jajo_ex.dto.ResponseDto;
 import jajo.jajo_ex.service.BoardFileService;
 import jajo.jajo_ex.service.BoardService;
 import jajo.jajo_ex.service.BoardServiceV2;
@@ -65,7 +68,7 @@ public class BoardControllerV2 {
         return zdateTime.format(formatter);
     }
 
-    public String saveDir(String boardType) {
+    public String getDir(String boardType) {
         String fileDir = "C:\\Users\\LEEJAEJOON\\Documents\\PupPle\\src\\main\\resources\\static\\uploadImage\\";
         fileDir += boardType + "\\";
         return fileDir;
@@ -78,7 +81,7 @@ public class BoardControllerV2 {
     }
 
     public File saveImage(String boardType, String fileName) {
-        return new File(saveDir(boardType), fileName);
+        return new File(getDir(boardType), fileName);
     }
 
 
@@ -143,5 +146,42 @@ public class BoardControllerV2 {
         response.put("boardType", boardType);
 
         return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/recommend")
+    @ResponseBody
+    public ResponseDto<?> increase(@RequestBody QuillDataDTO quillData) {
+        boardService.increaseRecommend(quillData.getNo());
+        return ResponseDto.success(1);
+    }
+
+    @DeleteMapping("/deleteForm")
+    public ResponseDto<Integer> deleteOne(@RequestParam("no") Long no, @RequestParam("boardType") String boardType){
+
+        List<BoardFile> boardFile = boardFileService.findByBoardV2(no);
+
+        String removeFile = boardFile.get(0).getFileName();
+        String removeThumbnailName = boardFile.get(0).getThumbnail();
+
+        if(!Objects.equals(removeThumbnailName, "")) {
+            String DeleteThumbnailDir = getDir(boardType) + removeThumbnailName;
+            File DeleteThumbnail = new File(DeleteThumbnailDir);
+            if(DeleteThumbnail.delete()) {
+                System.out.println(removeThumbnailName + ": 삭제 완료");
+            }
+        }
+
+        for (String removeFileName : removeFile.split(",")) {
+            removeFileName = removeFileName.trim();
+            if (removeFileName != "") {
+                String DeleteFileDir = getDir(boardType) + removeFileName;
+                File DeleteFile = new File(DeleteFileDir);
+                if (DeleteFile.delete()) {
+                    System.out.println(removeFileName + ": 삭제 완료");
+                }
+            }
+        }
+        boardService.deleteBoard(no);
+        return ResponseDto.success(1);
     }
 }

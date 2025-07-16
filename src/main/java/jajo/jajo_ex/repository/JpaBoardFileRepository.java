@@ -32,6 +32,12 @@ public class JpaBoardFileRepository implements BoardFileRepository {
                 .setParameter("no", no)
                 .getResultList();
     }
+    @Override
+    public List<BoardFile> findByBoardV2(Long no) {
+        return em.createQuery("select f from BoardFile f where f.boardV2.no =:no", BoardFile.class)
+                .setParameter("no", no)
+                .getResultList();
+    }
 
     @Override
     public int updateFileName(Long no, String fileName) {

@@ -7,6 +7,8 @@ import jajo.jajo_ex.dto.PageDto;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.Query;
 import jakarta.transaction.Transactional;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 
@@ -29,6 +31,14 @@ public class JpaBoardRepositoryV2 implements BoardRepositoryV2 {
         }
         em.persist(board);
         return board;
+    }
+
+    //좋아요 구현을 위해 db값을 변경하기 위해 em.persist 사용x
+    @Override
+    public void increaseRecommend(Long no) {
+        em.createQuery("update BoardV2 b set b.recommend = b.recommend + 1 where b.no =:no")
+                .setParameter("no", no)
+                .executeUpdate();
     }
 
     @Override

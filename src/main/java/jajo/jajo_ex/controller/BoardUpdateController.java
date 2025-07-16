@@ -3,8 +3,10 @@ package jajo.jajo_ex.controller;
 import jajo.jajo_ex.BoardType;
 import jajo.jajo_ex.domain.Board;
 import jajo.jajo_ex.domain.BoardFile;
+import jajo.jajo_ex.domain.BoardV2;
 import jajo.jajo_ex.domain.Member;
 import jajo.jajo_ex.dto.BoardRequestDto;
+import jajo.jajo_ex.dto.QuillDataDTO;
 import jajo.jajo_ex.dto.ResponseDto;
 import jajo.jajo_ex.service.BoardFileService;
 import jajo.jajo_ex.service.BoardService;
@@ -33,10 +35,6 @@ public class BoardUpdateController {
         this.boardFileService = boardFileService;
     }
 
-//    @DeleteMapping("/deleteForm")
-//    public void delete(@RequestParam("no") Long no){
-//        //boardService.deleteBoard(no);
-//    }
     @DeleteMapping("/deleteForm")
     public ResponseDto<Integer> deleteOne(@RequestParam("no") Long no, @RequestParam("boardType") BoardType boardType){
 

@@ -9,6 +9,7 @@ import java.util.List;
 
 public interface BoardRepositoryV2 {
     BoardV2 save(BoardV2 board);
+    void increaseRecommend(Long no);
     List<BoardV2> findUserBoardAll(String userId);
     List<BoardV2> findAll();
     List<BoardV2> findBoardAll(PageDto pageDto, BoardType boardType);

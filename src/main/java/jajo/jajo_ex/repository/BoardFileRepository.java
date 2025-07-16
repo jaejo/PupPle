@@ -9,5 +9,6 @@ public interface BoardFileRepository {
     BoardFile save(BoardFile boardFile);
     List<BoardFile> findAll();
     List<BoardFile> findByBoard(Long no);
+    List<BoardFile> findByBoardV2(Long no);
     int updateFileName(Long no, String fileName);
 }

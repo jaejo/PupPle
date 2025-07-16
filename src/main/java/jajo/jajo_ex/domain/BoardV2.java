@@ -60,8 +60,9 @@ public class BoardV2 extends Timestamped {
         return !this.member.equals(member);
     }
 
-    public void updateRecommend(QuillDataDTO quillData) {
-        this.recommend = quillData.getRecommend() + 1;
-    }
+//    content(delta) 값이 null로 바뀜
+//    public void updateRecommend(QuillDataDTO quillData) {
+//        this.recommend = quillData.getRecommend() + 1;
+//    }
 
 }

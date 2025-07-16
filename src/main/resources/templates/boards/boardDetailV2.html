@@ -202,7 +202,7 @@
             var boardType = $('input[id=boardType]').val();
             $.ajax({
                 type: 'delete',
-                url: "board/deleteForm",
+                url: "/deleteForm",
                 data: {
                     no : boardNo,
                     boardType : boardType
@@ -325,7 +325,7 @@
             };
             $.ajax({
                 type : "post",
-                url : "board/recommend",
+                url : "/recommend",
                 data : JSON.stringify(data),
                 dataType : "json",
                 contentType : 'application/json; charset=utf-8',

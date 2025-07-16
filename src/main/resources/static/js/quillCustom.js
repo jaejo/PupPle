@@ -13,6 +13,29 @@ const quill = new Quill('#editor', {
 
 const editorContainer = document.querySelector('#editor');
 
+function addImageStyle(quill) {
+    const images = quill.root.querySelectorAll('img');
+
+    images.forEach(img => {
+        const style = img.style;
+        let align = null;
+
+        if(style.float === 'left') align = 'left';
+        else if(style.float === 'right') align = 'right';
+        else if(style.display === 'block' && style.margin === 'auto') align = 'center';
+
+        console.log(align);
+
+        if (align) {
+            const blot = Quill.find(img);               // 이미지 blot 객체 찾기
+            const index = quill.getIndex(blot);         // 위치 추출
+            quill.formatLine(index, 1, { align });      // Delta에 스타일 반영
+        }
+    });
+}
+
+
+
 editorContainer.addEventListener('drop', function (e) {
   e.preventDefault();
   if (!e.dataTransfer || !e.dataTransfer.files || e.dataTransfer.files.length === 0) return;
@@ -168,7 +191,6 @@ function getImageExtension(base64) {
 
 function extractImagesFromQuill() {
     const delta = quill.getContents();
-    console.log(delta);
     const images = [];
 
     let imageIndex = 0;
@@ -195,39 +217,41 @@ function getThumbnail() {
 }
 
 //delta 확인용
-document.getElementById('save-delta').addEventListener('click', function () {
-    const delta = quill.getContents();
-    document.getElementById('output').innerText = JSON.stringify(delta, null, 2);
-    console.log('Delta:', delta);
-});
-
-//document.getElementById('save-delta').addEventListener('click', function() {
-//    const images = extractImagesFromQuill();
-//
-//    images.forEach((file, i) => {
-//        formData.append('file', file);
-//    });
-//
-//    formData.append('thumbnail', getThumbnail());
-//
-//    var data = {
-//        title : $("#title").val(),
-//        delta : quill.getContents(),
-//        boardType : $("#boardType").val()
-//    }
-//
-//    formData.append("info", new Blob([JSON.stringify(data)], {type: "application/json"}));
-//
-//    fetch('/newBoardV2', {
-//        method: 'POST',
-//        body: formData,
-//    })
-//    .then(response => response.json())
-//    .then(data => {
-//        console.log('저장완료:', data);
-//        location.replace("/boards?boardType=" + data.boardType);
-//    })
-//    .catch(error => {
-//        console.log('저장중 오류 발생:', error);
-//    });
+//document.getElementById('save-delta').addEventListener('click', function () {
+//    addImageStyle(quill);
+//    const delta = quill.getContents();
+//    document.getElementById('output').innerText = JSON.stringify(delta, null, 2);
+//    console.log('Delta:', delta);
 //});
+
+document.getElementById('save-delta').addEventListener('click', function() {
+    addImageStyle(quill);
+    const images = extractImagesFromQuill();
+
+    images.forEach((file, i) => {
+        formData.append('file', file);
+    });
+
+    formData.append('thumbnail', getThumbnail());
+
+    var data = {
+        title : $("#title").val(),
+        delta : quill.getContents(),
+        boardType : $("#boardType").val()
+    }
+
+    formData.append("info", new Blob([JSON.stringify(data)], {type: "application/json"}));
+
+    fetch('/newBoardV2', {
+        method: 'POST',
+        body: formData,
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log('저장완료:', data);
+        location.replace("/boards?boardType=" + data.boardType);
+    })
+    .catch(error => {
+        console.log('저장중 오류 발생:', error);
+    });
+});

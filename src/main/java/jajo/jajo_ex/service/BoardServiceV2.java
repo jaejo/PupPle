@@ -23,6 +23,11 @@ public class BoardServiceV2 {
         return board.getNo();
     }
 
+    @Transactional
+    public void increaseRecommend(Long no) {
+        boardRepository.increaseRecommend(no);
+    }
+
     public List<BoardV2> findBoards() {
         return boardRepository.findAll();
     }
