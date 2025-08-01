@@ -184,4 +184,19 @@ public class BoardControllerV2 {
         boardService.deleteBoard(no);
         return ResponseDto.success(1);
     }
+
+    @PostMapping("/updateBoardV2")
+    @ResponseBody
+    public Map<String, Object> updateBoard(@SessionAttribute(required=false, name="principal") Member principal, Model model,
+                                      @RequestBody QuillDataDTO quillDataDto) {
+        if (principal != null) model.addAttribute("member", principal);
+        Member member = memberService.findById(principal);
+        Long no = quillDataDto.getNo();
+        model.addAttribute("no", no);
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("no", no);
+
+        return response;
+    }
 }

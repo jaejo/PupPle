@@ -17,49 +17,43 @@
 </head>
 <body>
 <div class="include_wrap" data-include-path="header.html"></div>
-<form th:action="@{/updateBoard(no=${board.getNo()},title=${board.getTitle()},content=${board.getContent()}, boardType=${boardType})}" method="post">
-    <div class="good_content">
-        <div class="good_content_child">
-            <div class="good_content_user">
-                <label>작성자: </label>
-                <label th:text="${board.member.getUserId()}"></label>
-            </div>
-            <div class="good_content_img">
-                <label>좋아요: </label>
-                <img th:src="@{image/pow.png}" alt="좋아요" height="30" width="30" th:onclick="good([[${board.getRecommend()}]])">
-                <label th:text="${board.getRecommend()}"></label>
-            </div>
+<div class="good_content">
+    <div class="good_content_child">
+        <div class="good_content_user">
+            <label>작성자: </label>
+            <label th:text="${board.member.getUserId()}"></label>
+        </div>
+        <div class="good_content_img">
+            <label>좋아요: </label>
+            <img th:src="@{image/pow.png}" alt="좋아요" height="30" width="30" th:onclick="good([[${board.getRecommend()}]])">
+            <label th:text="${board.getRecommend()}"></label>
         </div>
     </div>
-    <div class="board_content">
-        <div class="boardTitle">
-            <label>제목</label>
-            <input type="text" th:value="${board.getTitle()}" readonly>
-        </div>
-        <div class="boardContent">
-            <div id="editor"></div>
-<!--            <label>내용</label>-->
-<!--            <input type="text" th:value="${board.getContent()}" readonly>-->
-<!--            <textarea th:text="${board.getContent()}" readonly></textarea>-->
-
-            <script src="https://cdn.quilljs.com/1.3.7/quill.js"></script>
+</div>
+<div class="board_content">
+    <div class="boardTitle">
+        <label>제목</label>
+        <input type="text" th:value="${board.getTitle()}" readonly>
+    </div>
+    <div class="boardContent">
+        <div id="editor"></div>
+        <script src="https://cdn.quilljs.com/1.3.7/quill.js"></script>
 <!--            <input type="text" id="boardContent" th:value="${boardContent}">-->
 <!--            thymeleaf Html에서 JSON을 직렬화하지 못해서 th:inline="javascript"을 사용해야함-->
-            <script th:inline="javascript">
-                const quill = new Quill('#editor', {
-                    theme: 'snow',
-                    readOnly: true,
-                    modules: { toolbar: false }
-                });
+        <script th:inline="javascript">
+            const quill = new Quill('#editor', {
+                theme: 'snow',
+                readOnly: true,
+                modules: { toolbar: false }
+            });
 
-                const deltaString = /*[[${delta}]]*/ '';
-                const delta = JSON.parse(deltaString);
+            const deltaString = /*[[${delta}]]*/ '';
+            const delta = JSON.parse(deltaString);
 
-                quill.setContents(delta);
-            </script>
-
-        </div>
+            quill.setContents(delta);
+        </script>
     </div>
+</div>
 <!--    <div th:each="files : ${boardFile}">-->
 <!--        <div class="images" th:if="${files.fileName != ''}">-->
 <!--            <div th:each="file : ${#strings.setSplit(files.fileName, ',')}">-->
@@ -69,12 +63,10 @@
 <!--            </div>-->
 <!--        </div>-->
 <!--    </div>-->
-    <div class="ctrl_btn" id="ctrl_btn">
-        <button class="ctrl_ModifyBtn" id="modify_btn" type="submit">수정하기</button>
-<!--                form안에 버튼은 sumit 역할을 하기 때문에 type="button"-->
-        <button class="ctrl_RemoveBtn" type="button" id="deleteFormAjax" onclick="deleteForm();">게시글 삭제</button>
-    </div>
-</form>
+<div class="ctrl_btn" id="ctrl_btn">
+    <button class="ctrl_ModifyBtn" id="modify_btn">수정하기</button>
+    <button class="ctrl_RemoveBtn" type="button" id="deleteFormAjax" onclick="deleteForm();">게시글 삭제</button>
+</div>
 <!--클릭시 이미지 확대, 클릭시 꺼지는 동작-->
 <div id="imageModal" class="modal" onclick="closeModal()">
     <img id="modalImage" />
@@ -156,185 +148,204 @@
 </body>
 </html>
 <script>
-    function includeHtml() {
-        var allElements = $(".include_wrap");
-        Array.prototype.forEach.call(allElements, function(el) {
-            var includePath = el.dataset.includePath;
+function includeHtml() {
+    var allElements = $(".include_wrap");
+    Array.prototype.forEach.call(allElements, function(el) {
+        var includePath = el.dataset.includePath;
 
-            if (includePath) {
-                var xhttp = new XMLHttpRequest();
-                xhttp.onreadystatechange = function () {
-                    if (this.readyState == 4 && this.status == 200) {
-                        el.outerHTML = this.responseText;
-                    }
-                };
-                xhttp.open('GET', includePath, false);
-                xhttp.send();
-            }
-        });
-    }
-
-    $(document).ready(function() {
-	    includeHtml();
-	    var loginUser = document.getElementById('loginUser');
-	    if (loginUser != null) $('#login').hide();
-	    else $('#logout').hide();
-	});
-    <!--    글쓴이와 사용자 확인-->
-
-        var boardUser = $('input[id=boardUser]').val();
-        var loginUser = $('input[id=loginUser]').val();
-        var loginId = $('input[id=loginId]').val();
-        var boardNo = $('input[id=boardNo]').val();
-
-        console.log("글쓴이 " + boardUser);
-        console.log("현재 사용자 " + loginUser);
-        console.log("로그인 유저 고유 ID " + loginId);
-
-        $("#update").hide();
-        $("#reply").hide();
-
-        if(loginUser != boardUser) {
-            $("#ctrl_btn").hide();
-        }
-
-        function deleteForm() {
-            var boardType = $('input[id=boardType]').val();
-            $.ajax({
-                type: 'delete',
-                url: "/deleteForm",
-                data: {
-                    no : boardNo,
-                    boardType : boardType
-                },
-                dataType: 'json',
-
-                success: function(rest) {
-                    alert("삭제 완료");
-                    location.href="/boards?boardType=" + boardType;
-                }, error: function(error) {
-                    console.log("통신불가");
+        if (includePath) {
+            var xhttp = new XMLHttpRequest();
+            xhttp.onreadystatechange = function () {
+                if (this.readyState == 4 && this.status == 200) {
+                    el.outerHTML = this.responseText;
                 }
-            });
-        }
-        function create() {
-            var content = document.getElementById('content').value;
-            console.log(content);
-            let data = {
-                memberId : loginId,
-                boardNo : boardNo,
-                content : content
             };
-            $.ajax({
-                type: 'post',
-                url: '/createComment',
-                data: JSON.stringify(data),
-                dataType: "json",
-                contentType: 'application/json; charset=utf-8',
-                success : function(rest) {
-                    console.log("댓글이 등록되었습니다.");
-                    location.replace("");
-                }, error : function(error) {
-                    console.log("통신 실패");
-                }
-
-            });
+            xhttp.open('GET', includePath, false);
+            xhttp.send();
         }
-        var replyParentId = 0
+    });
+}
 
-        function createReplyFocus(parentId) {
-            $("#reply").show();
-            $("#replyContent").focus();
-            replyParentId = parentId;
+$(document).ready(function() {
+    includeHtml();
+    var loginUser = document.getElementById('loginUser');
+    if (loginUser != null) $('#login').hide();
+    else $('#logout').hide();
+});
+
+
+var boardUser = $('input[id=boardUser]').val();
+var loginUser = $('input[id=loginUser]').val();
+var loginId = $('input[id=loginId]').val();
+var boardNo = $('input[id=boardNo]').val();
+
+<!--        console.log("글쓴이 " + boardUser);-->
+<!--        console.log("현재 사용자 " + loginUser);-->
+<!--        console.log("로그인 유저 고유 ID " + loginId);-->
+
+$("#update").hide();
+$("#reply").hide();
+
+if(loginUser != boardUser) {
+    $("#ctrl_btn").hide();
+}
+
+const modify_btn = document.getElementById('modify_btn');
+
+modify_btn.addEventListener('click', ()=> {
+    const no = document.getElementById('boardNo').value;
+
+    fetch('/updateBoardV2', {
+    method: 'POST',
+    headers: {
+        'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ no: no })
+})
+    .then(response => response.json())
+    .then(data => {
+        location.replace("/updateBoardV2?no=" + data.no);
+    })
+    .catch(error => console.error('에러 발생:', error));
+});
+
+function deleteForm() {
+    var boardType = $('input[id=boardType]').val();
+    $.ajax({
+        type: 'delete',
+        url: "/deleteForm",
+        data: {
+            no : boardNo,
+            boardType : boardType
+        },
+        dataType: 'json',
+
+        success: function(rest) {
+            alert("삭제 완료");
+            location.href="/boards?boardType=" + boardType;
+        }, error: function(error) {
+            console.log("통신불가");
         }
-        function createReply() {
-            var content = document.getElementById('replyContent').value;
-
-            let data = {
-                parentId : replyParentId,
-                memberId : loginId,
-                boardNo : boardNo,
-                content : content
-            };
-            $.ajax({
-                type: 'post',
-                url: '/createComment',
-                data: JSON.stringify(data),
-                dataType: "json",
-                contentType: 'application/json; charset=utf-8',
-                success : function(rest) {
-                    console.log("리플이 등록되었습니다.");
-                    location.replace("");
-                }, error : function(error) {
-                    console.log("통신 실패");
-                }
-            });
-        }
-       var updateCommentId = 0;
-
-        function updateCommentFocus(id) {
-            $("#update").show();
-            $("#updateContent").focus();
-            updateCommentId = id;
+    });
+}
+function create() {
+    var content = document.getElementById('content').value;
+    console.log(content);
+    let data = {
+        memberId : loginId,
+        boardNo : boardNo,
+        content : content
+    };
+    $.ajax({
+        type: 'post',
+        url: '/createComment',
+        data: JSON.stringify(data),
+        dataType: "json",
+        contentType: 'application/json; charset=utf-8',
+        success : function(rest) {
+            console.log("댓글이 등록되었습니다.");
+            location.replace("");
+        }, error : function(error) {
+            console.log("통신 실패");
         }
 
+    });
+}
+var replyParentId = 0
 
-        function updateComment() {
-            var commentContent = $('textarea[id=updateContent]').val();
-            let data =
-            {
-                content : commentContent,
-                id : updateCommentId
-            };
+function createReplyFocus(parentId) {
+    $("#reply").show();
+    $("#replyContent").focus();
+    replyParentId = parentId;
+}
+function createReply() {
+    var content = document.getElementById('replyContent').value;
 
-            $.ajax({
-                type: "post",
-                url: "/updateComment",
-                data: JSON.stringify(data),
-                contentType: 'application/json; charset=utf-8',
-                dataType: "json",
-                success: function(rest) {
-                    alert('댓글 변경 성공');
-                    location.replace("");
-                }, error: function(error) {
-                    console.log('통신 실패');
-                }
-            });
+    let data = {
+        parentId : replyParentId,
+        memberId : loginId,
+        boardNo : boardNo,
+        content : content
+    };
+    $.ajax({
+        type: 'post',
+        url: '/createComment',
+        data: JSON.stringify(data),
+        dataType: "json",
+        contentType: 'application/json; charset=utf-8',
+        success : function(rest) {
+            console.log("리플이 등록되었습니다.");
+            location.replace("");
+        }, error : function(error) {
+            console.log("통신 실패");
         }
+    });
+}
+var updateCommentId = 0;
 
-        function deleteComment(id) {
-            let data = { id : id };
-            $.ajax({
-                url: "/deleteComment",
-                type: "post",
-                data: JSON.stringify(data),
-                dataType: "json",
-                contentType: 'application/json; charset=utf-8',
-                success : function(rest) {
-                    alert("댓글 삭제 완료");
-                    location.replace("");
-                }, error : function(error) {
-                    console.log("통신 실패");
-                }
-            });
+function updateCommentFocus(id) {
+    $("#update").show();
+    $("#updateContent").focus();
+    updateCommentId = id;
+}
+
+
+function updateComment() {
+    var commentContent = $('textarea[id=updateContent]').val();
+    let data =
+    {
+        content : commentContent,
+        id : updateCommentId
+    };
+
+    $.ajax({
+        type: "post",
+        url: "/updateComment",
+        data: JSON.stringify(data),
+        contentType: 'application/json; charset=utf-8',
+        dataType: "json",
+        success: function(rest) {
+            alert('댓글 변경 성공');
+            location.replace("");
+        }, error: function(error) {
+            console.log('통신 실패');
         }
-        function good(recommend) {
-            var data = {
-                no : boardNo,
-                recommend : recommend
-            };
-            $.ajax({
-                type : "post",
-                url : "/recommend",
-                data : JSON.stringify(data),
-                dataType : "json",
-                contentType : 'application/json; charset=utf-8',
-                success : function(rest) {
-                    location.replace("");
-                },
-                error : function(error) {
-                    console.log("통신 에러");
-                }
-            });
+    });
+}
+
+function deleteComment(id) {
+    let data = { id : id };
+    $.ajax({
+        url: "/deleteComment",
+        type: "post",
+        data: JSON.stringify(data),
+        dataType: "json",
+        contentType: 'application/json; charset=utf-8',
+        success : function(rest) {
+            alert("댓글 삭제 완료");
+            location.replace("");
+        }, error : function(error) {
+            console.log("통신 실패");
         }
+    });
+}
+function good(recommend) {
+    var data = {
+        no : boardNo,
+        recommend : recommend
+    };
+    $.ajax({
+        type : "post",
+        url : "/recommend",
+        data : JSON.stringify(data),
+        dataType : "json",
+        contentType : 'application/json; charset=utf-8',
+        success : function(rest) {
+            location.replace("");
+        },
+        error : function(error) {
+            console.log("통신 에러");
+        }
+    });
+}
 </script>

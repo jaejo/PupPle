@@ -1,7 +1,7 @@
 package jajo.jajo_ex.controller;
 
 import jajo.jajo_ex.BoardType;
-import jajo.jajo_ex.domain.Board;
+import jajo.jajo_ex.domain.BoardFile;
 import jajo.jajo_ex.domain.BoardV2;
 import jajo.jajo_ex.domain.Comment;
 import jajo.jajo_ex.domain.Member;
@@ -16,21 +16,19 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.SessionAttribute;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
 
 @Controller
-public class BoardListController {
+public class BoardGetController {
     private final BoardServiceV2 boardService;
     private final MemberService memberService;
     private final BoardFileService boardFileService;
     private final CommentService commentService;
 
 
-    public BoardListController(BoardServiceV2 boardService, MemberService memberService, BoardFileService boardFileService, CommentService commentService) {
+    public BoardGetController(BoardServiceV2 boardService, MemberService memberService, BoardFileService boardFileService, CommentService commentService) {
         this.boardService = boardService;
         this.memberService = memberService;
         this.boardFileService = boardFileService;
@@ -107,4 +105,18 @@ public class BoardListController {
 
         return "boards/boardDetailV2";
     }
+
+    @GetMapping("/updateBoardV2")
+    public String update(@RequestParam("no") Long no,
+                    @SessionAttribute(required = false, name="principal") Member principal, Model model) {
+        if (principal != null) model.addAttribute("member", principal);
+        BoardV2 board = boardService.isPresentBoard(no);
+
+        model.addAttribute("board", board);
+        model.addAttribute("delta", board.getContent());
+        model.addAttribute("boardFile", boardFileService.findByBoardV2(no));
+
+        return "boards/updateBoardV2";
+    }
+
 }
