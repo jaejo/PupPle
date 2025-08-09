@@ -7,8 +7,10 @@ import java.util.List;
 
 public interface BoardFileRepository {
     BoardFile save(BoardFile boardFile);
+    BoardFile isPresentBoardFile(Long no);
     List<BoardFile> findAll();
     List<BoardFile> findByBoard(Long no);
     List<BoardFile> findByBoardV2(Long no);
+    BoardFile findByBoardV3(Long no);
     int updateFileName(Long no, String fileName);
 }

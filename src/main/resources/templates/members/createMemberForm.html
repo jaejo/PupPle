@@ -3,6 +3,7 @@
 <link rel="stylesheet" th:href="@{/css/join.css}">
 <head>
     <script src="http://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script th:src="@{/js/loadFooter.js}"></script>
     <script th:src="@{/js/logout.js}"></script>
     <meta charset="UTF-8">
 </head>
@@ -32,212 +33,187 @@
 </body>
 </html>
 <script>
-    function includeHtml() {
-        var allElements = $(".include_wrap");
-        Array.prototype.forEach.call(allElements, function(el) {
-            var includePath = el.dataset.includePath;
+var submitFlag = false;
+var idFlag = false;
+var pwFlag = false;
+var nameFlag = false;
 
-            if (includePath) {
-                var xhttp = new XMLHttpRequest();
-                xhttp.onreadystatechange = function () {
-                    if (this.readyState == 4 && this.status == 200) {
-                        el.outerHTML = this.responseText;
-                    }
-                };
-                xhttp.open('GET', includePath, false);
-                xhttp.send();
-            }
-        });
+function setFocusToInputObject(obj) {
+    if(submitFlag) {
+        submitFlag = false;
+        obj.focus();
+    }
+}
+function hideMsg(obj) {
+  obj.hide();
+}
+function showErrorMsg(obj, msg) {
+    obj.attr("class", "error_next_box");
+    obj.html(msg);
+    obj.show();
+}
+
+function showSuccessMsg(obj, msg) {
+    obj.attr("class", "error_next_box green");
+    obj.html(msg);
+    obj.show();
+}
+
+var idFlag = false;
+$("#userId").blur(function() {
+    idFlag = false;
+    checkId("first");
+});
+
+function checkId(event) {
+    if (idFlag) {
+        return true;
     }
 
-    $(document).ready(function() {
-	    includeHtml();
-	    var loginUser = document.getElementById('loginUser');
-	    if (loginUser != null) $('#login').hide();
-	    else $('#logout').hide();
-    });
+    var id = $("#userId").val();
+    var oMsg = $("#idMsg");
+    var oInput = $("#userId");
 
-    var submitFlag = false;
-    var idFlag = false;
-    var pwFlag = false;
-    var nameFlag = false;
 
-    function setFocusToInputObject(obj) {
-        if(submitFlag) {
-            submitFlag = false;
-            obj.focus();
-        }
+    if ( id == "") {
+        showErrorMsg(oMsg, "필수 정보입니다. ");
+        setFocusToInputObject(oInput);
+        return false;
     }
-    function hideMsg(obj) {
-      obj.hide();
+    var idReg = /^[a-z]+[a-z0-9]{5,19}$/g;
+    if (!idReg.test(id)) {
+        showErrorMsg(oMsg, "6~10자의 영문 소문자로 시작이 가능함");
+        setFocusToInputObject(oInput);
+        return false;
     }
-    function showErrorMsg(obj, msg) {
-        obj.attr("class", "error_next_box");
-        obj.html(msg);
-        obj.show();
-    }
+    idFlag = false;
+    let userId = $('input[name=userId]').val();
+    console.log("입력된 id값: " + userId);
 
-    function showSuccessMsg(obj, msg) {
-        obj.attr("class", "error_next_box green");
-        obj.html(msg);
-        obj.show();
-    }
-
-    var idFlag = false;
-    $("#userId").blur(function() {
-        idFlag = false;
-        checkId("first");
-    });
-
-    function checkId(event) {
-        if (idFlag) {
-            return true;
-        }
-
-        var id = $("#userId").val();
-        var oMsg = $("#idMsg");
-        var oInput = $("#userId");
-
-
-        if ( id == "") {
-            showErrorMsg(oMsg, "필수 정보입니다. ");
-            setFocusToInputObject(oInput);
-            return false;
-        }
-        var idReg = /^[a-z]+[a-z0-9]{5,19}$/g;
-        if (!idReg.test(id)) {
-            showErrorMsg(oMsg, "6~10자의 영문 소문자로 시작이 가능함");
-            setFocusToInputObject(oInput);
-            return false;
-        }
-        idFlag = false;
-        let userId = $('input[name=userId]').val();
-        console.log("입력된 id값: " + userId);
-
-        $.ajax({
-          url: "/ajaxIdUrl",
-          type: "post",
-          data: {
-            userId : userId
-          },
-          dataType: 'json',
-          success: function (result) {
-            if(result == 0) {
-              showErrorMsg(oMsg, "이미 사용중인 아이디입니다.");
-              setFocusToInputObject(oInput);
-            } else {
-              if (event == "first") {
-                showSuccessMsg(oMsg, "적합한 아이디");
-              } else {
-                hideMsg(oMsg);
-              }
-              idFlag = true;
-            }
-          },
-          error: function () {
-            alert("서버요청실패");
+    $.ajax({
+      url: "/ajaxIdUrl",
+      type: "post",
+      data: {
+        userId : userId
+      },
+      dataType: 'json',
+      success: function (result) {
+        if(result == 0) {
+          showErrorMsg(oMsg, "이미 사용중인 아이디입니다.");
+          setFocusToInputObject(oInput);
+        } else {
+          if (event == "first") {
+            showSuccessMsg(oMsg, "적합한 아이디");
+          } else {
+            hideMsg(oMsg);
           }
-        })
-        return true;
+          idFlag = true;
+        }
+      },
+      error: function () {
+        alert("서버요청실패");
+      }
+    })
+    return true;
+}
+
+$("#userPw").blur(function() {
+    pwFlag = false;
+    checkPw();
+});
+
+function checkPw() {
+    if(pwFlag) return true;
+
+    var pw = $("#userPw").val();
+    var oMsg = $("#pwMsg");
+    var oInput = $("#userPw");
+
+    if (pw == "") {
+        showErrorMsg(oMsg, "필수 정보입니다.");
+        setFocusToInputObject(oInput);
+        return false;
     }
+    var pwReg = /^(?=.*[a-zA-z])(?=.*[0-9])(?=.*[$`~!@$!%*#^?&\\(\\)\-_=+]).{8,16}$/;
+    if (!pwReg.test(pw)) {
+        showErrorMsg(oMsg, "영문자, 숫자, 특수문자를 포함한 8~16자");
+        setFocusToInputObject(oInput);
+        return false;
+    } else {
+        pwFlag = true;
+    }
+    let userPw = $('input[name=userPw]').val();
+    console.log(userPw);
 
-    $("#userPw").blur(function() {
-        pwFlag = false;
-        checkPw();
-    });
-
-    function checkPw() {
-        if(pwFlag) return true;
-
-        var pw = $("#userPw").val();
-        var oMsg = $("#pwMsg");
-        var oInput = $("#userPw");
-
-        if (pw == "") {
-            showErrorMsg(oMsg, "필수 정보입니다.");
-            setFocusToInputObject(oInput);
-            return false;
-        }
-        var pwReg = /^(?=.*[a-zA-z])(?=.*[0-9])(?=.*[$`~!@$!%*#^?&\\(\\)\-_=+]).{8,16}$/;
-        if (!pwReg.test(pw)) {
-            showErrorMsg(oMsg, "영문자, 숫자, 특수문자를 포함한 8~16자");
-            setFocusToInputObject(oInput);
-            return false;
-        } else {
-            pwFlag = true;
-        }
-        let userPw = $('input[name=userPw]').val();
-        console.log(userPw);
-
-        $.ajax({
-            url: "/ajaxPwUrl",
-            type: "post",
-            data: {
-                userPw: userPw,
-                pwFlag: pwFlag
-            },
-            dataType: 'json',
-            success: function (result) {
-                if(result == 0) {
-                    showErrorMsg(oMsg, "특수문자, 영문자, 숫자를 포함한 8 ~ 16자를 입력하세요.");
-                    setFocusToInputObject(oInput);
-                } else {
-                    showSuccessMsg(oMsg, "적합한 비밀번호");
+    $.ajax({
+        url: "/ajaxPwUrl",
+        type: "post",
+        data: {
+            userPw: userPw,
+            pwFlag: pwFlag
+        },
+        dataType: 'json',
+        success: function (result) {
+            if(result == 0) {
+                showErrorMsg(oMsg, "특수문자, 영문자, 숫자를 포함한 8 ~ 16자를 입력하세요.");
+                setFocusToInputObject(oInput);
+            } else {
+                showSuccessMsg(oMsg, "적합한 비밀번호");
 <!--                    oMsg.hide();-->
-                }
-                pwFlag = true;
-            },
-            error: function () {
-                alert("서버요청실패");
             }
-        })
+            pwFlag = true;
+        },
+        error: function () {
+            alert("서버요청실패");
+        }
+    })
+    return true;
+}
+$("#name").blur(function() {
+    nameFlag = false;
+    checkName();
+});
+
+function checkName() {
+    if(nameFlag) return true;
+
+    var name = $("#name").val();
+    var oMsg = $("#nameMsg");
+    var oInput = $("#name");
+
+    if (name == "") {
+        showErrorMsg(oMsg, "필수 정보입니다.");
+        setFocusToInputObject(oInput);
+        return false;
+    }
+
+    var nameReg = /^[ㄱ-ㅎ|가-힣]{2,6}$/;
+
+    if (!nameReg.test(name)) {
+        showErrorMsg(oMsg, "한글 2~6자를 입력하세요.");
+        setFocusToInputObject(oInput);
+        return false;
+    } else {
+        console.log(name);
+        showSuccessMsg(oMsg, "적합한 이름");
+        nameFlag = true;
         return true;
     }
-    $("#name").blur(function() {
-        nameFlag = false;
-        checkName();
-    });
-
-    function checkName() {
-        if(nameFlag) return true;
-
-        var name = $("#name").val();
-        var oMsg = $("#nameMsg");
-        var oInput = $("#name");
-
-        if (name == "") {
-            showErrorMsg(oMsg, "필수 정보입니다.");
-            setFocusToInputObject(oInput);
-            return false;
-        }
-
-        var nameReg = /^[ㄱ-ㅎ|가-힣]{2,6}$/;
-
-        if (!nameReg.test(name)) {
-            showErrorMsg(oMsg, "한글 2~6자를 입력하세요.");
-            setFocusToInputObject(oInput);
-            return false;
-        } else {
-            console.log(name);
-            showSuccessMsg(oMsg, "적합한 이름");
-            nameFlag = true;
-            return true;
+}
+function emptyCheck() {
+    var is_empty = false;
+    for(i=0;i<3;i++){
+        if(joinform[i].value == ''){
+            alert("값을 전부 입력해주세요.");
+            return;
         }
     }
-    function emptyCheck() {
-        var is_empty = false;
-        for(i=0;i<3;i++){
-            if(joinform[i].value == ''){
-                alert("값을 전부 입력해주세요.");
-                return;
-            }
-        }
-        if(idFlag && pwFlag && nameFlag) {
-            document.joinform.submit();
-            alert("가입 완료");
-        } else {
-            alert("다시 확인하세요");
-        }
+    if(idFlag && pwFlag && nameFlag) {
+        document.joinform.submit();
+        alert("가입 완료");
+    } else {
+        alert("다시 확인하세요");
     }
+}
 </script>
 

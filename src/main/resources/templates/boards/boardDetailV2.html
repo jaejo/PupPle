@@ -5,6 +5,7 @@
 <head>
     <meta charset="UTF-8">
     <script src="http://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script th:src="@{/js/loadFooter.js}"></script>
     <script th:src="@{/js/enlargeImage.js}"></script>
     <script th:src="@{/js/logout.js}"></script>
     <link href="https://cdn.quilljs.com/1.3.7/quill.snow.css" rel="stylesheet" />
@@ -148,40 +149,11 @@
 </body>
 </html>
 <script>
-function includeHtml() {
-    var allElements = $(".include_wrap");
-    Array.prototype.forEach.call(allElements, function(el) {
-        var includePath = el.dataset.includePath;
-
-        if (includePath) {
-            var xhttp = new XMLHttpRequest();
-            xhttp.onreadystatechange = function () {
-                if (this.readyState == 4 && this.status == 200) {
-                    el.outerHTML = this.responseText;
-                }
-            };
-            xhttp.open('GET', includePath, false);
-            xhttp.send();
-        }
-    });
-}
-
-$(document).ready(function() {
-    includeHtml();
-    var loginUser = document.getElementById('loginUser');
-    if (loginUser != null) $('#login').hide();
-    else $('#logout').hide();
-});
-
-
 var boardUser = $('input[id=boardUser]').val();
 var loginUser = $('input[id=loginUser]').val();
 var loginId = $('input[id=loginId]').val();
 var boardNo = $('input[id=boardNo]').val();
 
-<!--        console.log("글쓴이 " + boardUser);-->
-<!--        console.log("현재 사용자 " + loginUser);-->
-<!--        console.log("로그인 유저 고유 ID " + loginId);-->
 
 $("#update").hide();
 $("#reply").hide();
@@ -194,17 +166,17 @@ const modify_btn = document.getElementById('modify_btn');
 
 modify_btn.addEventListener('click', ()=> {
     const no = document.getElementById('boardNo').value;
-
+    const boardType = document.getElementById('boardType').value;
     fetch('/updateBoardV2', {
     method: 'POST',
     headers: {
         'Content-Type': 'application/json',
     },
-    body: JSON.stringify({ no: no })
+    body: JSON.stringify({ no: no, boardType: boardType })
 })
     .then(response => response.json())
     .then(data => {
-        location.replace("/updateBoardV2?no=" + data.no);
+        location.replace(`/updateBoardV2?boardType=${data.boardType}&no=${data.no}`);
     })
     .catch(error => console.error('에러 발생:', error));
 });

@@ -95,10 +95,10 @@ public class BoardControllerV2 {
 
         String allFile = "";
         String thumbnail_img = "";
-        String title = quillData.getTitle();
 
+        String title = quillData.getTitle();
         Map<String, Object> delta = quillData.getDelta();
-        System.out.println("델타: " + delta);
+
         String boardType = "";
         boardType += quillData.getBoardType();
 
@@ -107,22 +107,24 @@ public class BoardControllerV2 {
             thumbnail_img = transferImageName(thumbnailName);
             thumbnail.transferTo(saveImage(boardType, thumbnail_img));
         }
-        String[] imageUrls = new String[file.length];
-        int num = 0;
-
-        for(MultipartFile f: file) {
-            if (!f.isEmpty()) {
-                String fileName = f.getOriginalFilename();
-                String img = transferImageName(fileName);
+        String[] imageUrls;
+        if(file != null) {
+            imageUrls = new String[file.length];
+            int num = 0;
+            for (MultipartFile f : file) {
+                if (!f.isEmpty()) {
+                    String fileName = f.getOriginalFilename();
+                    String img = transferImageName(fileName);
 //                String imageUrl = saveDir(boardType) + img;
-                String imageUrl = "/uploadImage/" + boardType + "/" + img;
-                imageUrls[num++] = imageUrl;
-                allFile += img + ", ";
-                f.transferTo(saveImage(boardType, img));
+                    String imageUrl = "/uploadImage/" + boardType + "/" + img;
+                    imageUrls[num++] = imageUrl;
+                    allFile += img + ", ";
+                    f.transferTo(saveImage(boardType, img));
+                }
             }
+            delta = base64ToUrl(delta, imageUrls);
         }
 
-        delta = base64ToUrl(delta, imageUrls);
 
         BoardV2 board = BoardV2.builder()
                 .member(member)
@@ -192,9 +194,98 @@ public class BoardControllerV2 {
         if (principal != null) model.addAttribute("member", principal);
         Member member = memberService.findById(principal);
         Long no = quillDataDto.getNo();
+        String boardType = "";
+        boardType += quillDataDto.getBoardType();
         model.addAttribute("no", no);
+        model.addAttribute("boardType", boardType);
 
         Map<String, Object> response = new HashMap<>();
+        response.put("no", no);
+        response.put("boardType", boardType);
+
+        return response;
+    }
+
+    @PostMapping("/updateQuill")
+    @ResponseBody
+    public Map<String, Object> updateQuill(@SessionAttribute(required=false, name="principal") Member principal, Model model,
+                                           @RequestPart(value="info") QuillDataDTO quillData,
+                                           @RequestPart(value="thumbnail", required =false) MultipartFile thumbnail,
+                                           @RequestPart(value="file", required =false) MultipartFile[] file) throws IOException {
+        if (principal != null) model.addAttribute("member", principal);
+        Member member = memberService.findById(principal);
+
+        String allFile = "";
+        String thumbnail_img = "";
+
+        String title = quillData.getTitle();
+        Map<String, Object> delta = quillData.getDelta();
+
+
+        Long no = quillData.getNo();
+        String boardType = "";
+        boardType += quillData.getBoardType();
+
+        BoardV2 board = boardService.isPresentBoard(no);
+        BoardFile boardFile = boardFileService.findByBoardV3(no);
+
+        String removeThumbnail = boardFile.getThumbnail();
+        String removeFiles = boardFile.getFileName();
+        String removeThumbnailDir = getDir(boardType) + removeThumbnail;
+
+        File deleteThumbnail = new File(removeThumbnailDir);
+        //기존 썸네일 삭제
+        if(deleteThumbnail.delete()) {
+            System.out.println(removeThumbnail + "가 삭제됨");
+        }
+        //기존 이미지 파일 삭제
+        for(String removeFile : removeFiles.split(",")) {
+            removeFile = removeFile.trim();
+            if(!removeFile.isEmpty()) {
+                String removeFileDir = getDir(boardType) + removeFile;
+                File deleteFile = new File(removeFileDir);
+                if(deleteFile.delete()) {
+                    System.out.println(removeFile + "가 삭제됨");
+                }
+            }
+        }
+
+        if(!thumbnail.isEmpty()) {
+            String thumbnailName = thumbnail.getOriginalFilename();
+            thumbnail_img = transferImageName(thumbnailName);
+            thumbnail.transferTo(saveImage(boardType, thumbnail_img));
+        }
+
+        String[] imageUrls;
+        if(file != null) {
+            imageUrls = new String[file.length];
+            int num = 0;
+            for (MultipartFile f : file) {
+                if (!f.isEmpty()) {
+                    String fileName = f.getOriginalFilename();
+                    String img = transferImageName(fileName);
+                    String imageUrl = "/uploadImage/" + boardType + "/" + img;
+                    imageUrls[num++] = imageUrl;
+                    allFile += img + ", ";
+                    f.transferTo(saveImage(boardType, img));
+                }
+            }
+            delta = base64ToUrl(delta, imageUrls);
+            System.out.println("delta: " + delta);
+        }
+
+        board.setTitle(title);
+        board.setDelta(delta);
+
+        boardService.save(board);
+
+        boardFile.setFileName(allFile);
+        boardFile.setThumbnail(thumbnail_img);
+
+        boardFileService.save(boardFile);
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("boardType", boardType);
         response.put("no", no);
 
         return response;

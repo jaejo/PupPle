@@ -21,6 +21,10 @@ public class JpaBoardFileRepository implements BoardFileRepository {
     }
 
     @Override
+    public BoardFile isPresentBoardFile(Long no) { return em.find(BoardFile.class, no); }
+
+
+    @Override
     public List<BoardFile> findAll() {
         return em.createQuery("select f from BoardFile f", BoardFile.class)
                 .getResultList();
@@ -32,11 +36,19 @@ public class JpaBoardFileRepository implements BoardFileRepository {
                 .setParameter("no", no)
                 .getResultList();
     }
+
     @Override
     public List<BoardFile> findByBoardV2(Long no) {
         return em.createQuery("select f from BoardFile f where f.boardV2.no =:no", BoardFile.class)
                 .setParameter("no", no)
                 .getResultList();
+    }
+
+    @Override
+    public BoardFile findByBoardV3(Long no) {
+        return em.createQuery("select f from BoardFile f where f.boardV2.no =:no", BoardFile.class)
+                .setParameter("no", no)
+                .getSingleResult();
     }
 
     @Override

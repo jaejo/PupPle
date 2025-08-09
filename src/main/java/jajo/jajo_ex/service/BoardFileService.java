@@ -18,6 +18,10 @@ public class BoardFileService {
         return boardFile.getId();
     }
 
+    public BoardFile isPresentBoardFile(Long no) {
+        return boardFileRepository.isPresentBoardFile(no);
+    }
+
     public List<BoardFile> findAll() {
         return boardFileRepository.findAll();
     }
@@ -28,6 +32,10 @@ public class BoardFileService {
 
     public List<BoardFile> findByBoardV2(Long no) {
         return boardFileRepository.findByBoardV2(no);
+    }
+
+    public BoardFile findByBoardV3(Long no) {
+        return boardFileRepository.findByBoardV3(no);
     }
 
     public void updateFileName(Long no, String fileName) {

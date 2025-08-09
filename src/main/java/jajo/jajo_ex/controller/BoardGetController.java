@@ -98,7 +98,6 @@ public class BoardGetController {
         List<Comment> comment = commentService.findBoardNo(no);
         model.addAttribute("board", board);
         model.addAttribute("delta", board.getContent());
-        System.out.println("내용: " + board.getContent());
         model.addAttribute("comments", getAllCommentsByBoard(no).getData());
         model.addAttribute("boardFile", boardFileService.findByBoard(no));
         model.addAttribute("boardType", boardType);
@@ -107,14 +106,17 @@ public class BoardGetController {
     }
 
     @GetMapping("/updateBoardV2")
-    public String update(@RequestParam("no") Long no,
+    public String update(@RequestParam("no") Long no, @RequestParam("boardType") String boardType,
                     @SessionAttribute(required = false, name="principal") Member principal, Model model) {
         if (principal != null) model.addAttribute("member", principal);
         BoardV2 board = boardService.isPresentBoard(no);
+        BoardFile boardFile = boardFileService.isPresentBoardFile(no);
 
+        model.addAttribute("no", no);
         model.addAttribute("board", board);
+        model.addAttribute("boardType", boardType);
         model.addAttribute("delta", board.getContent());
-        model.addAttribute("boardFile", boardFileService.findByBoardV2(no));
+        model.addAttribute("boardFile", boardFile);
 
         return "boards/updateBoardV2";
     }

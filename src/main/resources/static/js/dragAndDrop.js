@@ -3,7 +3,7 @@ let arr = new Array();
 
 document.addEventListener("DOMContentLoaded", function() {
     initMouseEvents();
-    initDragAndDrop();
+//    initDragAndDrop();
 });
 
 function initMouseEvents() {
@@ -69,7 +69,7 @@ function initMouseEvents() {
         fileList.forEach((file) => {
             const reader = new FileReader();
             reader.addEventListener("load", (event) => {
-                const img = createImageElement(event.target.result, file.name);
+                const img = createImageElement(event.target.result, 'thumbnail');
                 arr.push(file);
                 preview.append(img);
                 bindImageEvents(img);
@@ -87,7 +87,7 @@ function initMouseEvents() {
     }
 
     function bindImageEvents(draggable) {
-        if(draggable.dataset.bound === "true") return;
+//        if(draggable.dataset.bound === "true") return;
 
         draggable.addEventListener("dragstart", () => {
             draggable.classList.add("dragging");
@@ -104,7 +104,7 @@ function initMouseEvents() {
             }
         });
 
-        draggable.dataset.bound = "true";
+        draggable.dataset.listenerAttached = "true";
     }
 
 //    function el(nodeName, attributes, ...children) {
@@ -147,22 +147,9 @@ function initMouseEvents() {
 
 function initDragAndDrop() {
     const draggables = document.querySelectorAll(".embed-img");
-
     draggables.forEach(draggable => {
-//        draggable.addEventListener("dragstart", () => {
-//            if(e.target.classList.contains("embed-img")) draggable.classList.add("dragging");
-//        });
-//
-//        draggable.addEventListener("dragend", () => {
-//            if(e.target.classList.contains("embed-img")) draggable.classList.remove("dragging");
-//        });
-//
-//        draggable.addEventListener("dblclick", ()=> {
-//            if(confirm('해당 이미지를 삭제하시겠습니까?')) {
-//                draggable.remove();
-//                alert("삭제됐습니다.");
-//            }
-//        });
+        if(draggable.dataset.listenerAttached === "true") return;
+
         draggable.addEventListener("dragstart", (e) => {
             if(e.target.classList.contains("embed-img")) {
                 e.target.classList.add("dragging");
@@ -183,6 +170,8 @@ function initDragAndDrop() {
                 }
             }
         });
+        //중복 방지 플래그 추가
+        draggable.dataset.listenerAttached = "true";
     });
 
     const containers = document.querySelectorAll(".preview");
