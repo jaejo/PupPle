@@ -23,6 +23,13 @@ public class JpaMemberRepository implements MemberRepository {
     }
 
     @Override
+    public Optional<Member> findByUsername(String username) {
+        return Optional.ofNullable(em.createQuery("select m from Member m where m.username = :username", Member.class)
+                .setParameter("username", username)
+                .getSingleResult());
+    }
+
+    @Override
     public Optional<Member> findById(Long id) {
         Member member = em.find(Member.class, id);
         return Optional.ofNullable(member);
@@ -79,5 +86,13 @@ public class JpaMemberRepository implements MemberRepository {
         return em.find(Member.class, id);
     }
 
+    @Override
+    public Boolean existsByUsername(String username) {
+        Long count = em.createQuery(
+                        "SELECT COUNT(m) FROM Member m WHERE m.username = :username", Long.class)
+                .setParameter("username", username)
+                .getSingleResult();
+        return count > 0;
+    }
 
 }

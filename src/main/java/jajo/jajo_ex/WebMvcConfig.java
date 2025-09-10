@@ -12,14 +12,14 @@ import java.util.List;
 @Configuration
 public class WebMvcConfig implements WebMvcConfigurer {
 
-    @Override
-    public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(new LoginInterceptor())
-                .addPathPatterns("/detail", "/newBoard", "/newBoardV2", "/updateBoard", "/updateBoardV2", "/updateForm",
-                        "/createComment", "/updateComment", "/deleteComment",
-                        "/myPage", "/detailV2")
-                .excludePathPatterns("/", "/boards", "/login");
-    }
+//    @Override
+//    public void addInterceptors(InterceptorRegistry registry) {
+//        registry.addInterceptor(new LoginInterceptor())
+//                .addPathPatterns("/detail", "/newBoard", "/newBoardV2", "/updateBoard", "/updateBoardV2", "/updateForm",
+//                        "/createComment", "/updateComment", "/deleteComment",
+//                        "/myPage", "/detailV2")
+//                .excludePathPatterns("/", "/boards", "/login", "/member1/sign-in", "/member1/sign-up");
+//    }
     //정적 리소스 경로 설정(이미지를 불러올 때 서버를 재시작 안해도 됨)
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {

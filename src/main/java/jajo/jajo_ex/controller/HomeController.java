@@ -9,9 +9,13 @@ import java.util.Objects;
 
 @Controller
 public class HomeController {
+//    @GetMapping("/")
+//    public String home(@SessionAttribute(required = false, name="principal") Member principal, Model model) {
+//        if (principal != null) model.addAttribute("member", principal);
+//        return "home";
+//    }
     @GetMapping("/")
-    public String home(@SessionAttribute(required = false, name="principal") Member principal, Model model) {
-        if (principal != null) model.addAttribute("member", principal);
+    public String home() {
         return "home";
     }
 }

@@ -12,24 +12,57 @@
 <section class="wrap">
     <h1 style="text-align: center;">로그인</h1>
     <div class="loginForm">
-        <form name="loginform" action="login" method="post">
-            <div class="loginId">
-                <label for= "userId">아이디</label>
-                <input type="text" id="userId" name="userId" autocomplete="off" required>
-            </div>
-            <div class="loginPwd">
-                <label for="userPw">비밀번호</label>
-                <input type="password" id="userPw" name="userPw" autocomplete="off" required>
-            </div>
-            <div class="error_msg">
-                <span th:text="${msg}"></span>
-            </div>
-            <div class="loginButton">
-                <button class="join_btn"><a href="/newMember">회원 가입</a></button>
-                <button class="login_btn" type="submit"><span>로그인</span></button>
-            </div>
-        </form>
+<!--        <form name="loginform" action="/login" method="post">-->
+        <div class="loginId">
+            <label for= "userId">아이디</label>
+            <input type="text" id="userId" name="userId" autocomplete="off" required>
+        </div>
+        <div class="loginPwd">
+            <label for="password">비밀번호</label>
+            <input type="password" id="password" name="password" autocomplete="off" required>
+        </div>
+        <div class="error_msg">
+            <span id="failLogin" th:text="${msg}"></span>
+        </div>
+        <div class="loginButton">
+            <button class="join_btn"><a href="/newMember">회원 가입</a></button>
+            <button class="login_btn" id="clickLogin"><span>로그인</span></button>
+        </div>
+<!--        </form>-->
     </div>
 </section>
 </body>
 </html>
+<script>
+const clickLogin = document.getElementById('clickLogin');
+clickLogin.addEventListener('click', (e) => {
+    const userId = document.getElementById('userId').value;
+    const password = document.getElementById('password').value;
+
+    fetch('/login', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        credentials: "include",
+        body: JSON.stringify({ userId: userId, password: password })
+    })
+    .then(response => response.json())
+    .then(data => {
+        const token = data.jwtToken;
+        if(token) {
+            if(data.prevPage) {
+                if(data.prevPage == 'http://localhost:8080/login') location.replace("/");
+                else location.replace(data.prevPage);
+            } else {
+                location.replace("/");
+            }
+        } else {
+            document.getElementById('failLogin').innerText = data.msg;
+            alert('아이디 혹은 패스워드가 틀렸습니다.');
+        }
+    })
+    .catch(error => console.error('에러 발생:', error));
+});
+
+</script>

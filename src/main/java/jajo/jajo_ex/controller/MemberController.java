@@ -1,8 +1,8 @@
 package jajo.jajo_ex.controller;
 
-import jajo.jajo_ex.SessionConst;
 import jajo.jajo_ex.domain.Member;
 import jajo.jajo_ex.dto.ResponseDto;
+import jajo.jajo_ex.dto.SignUpDto;
 import jajo.jajo_ex.service.MemberService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
@@ -29,15 +29,8 @@ public class MemberController {
         return "members/createMemberForm";
     }
     @PostMapping("/newMember")
-    public String create(MemberForm form) {
-        Member member = new Member();
-
-        member.setUserId(form.getUserId());
-        member.setUserPw(form.getUserPw());
-        member.setName(form.getName());
-
-        memberService.join(member);
-
+    public String create(@ModelAttribute SignUpDto signUpDto) {
+        memberService.signUp(signUpDto);
         return "redirect:/";
     }
 
@@ -49,16 +42,23 @@ public class MemberController {
         return "members/memberList";
     }
 
-    @PostMapping("/ajaxIdUrl")
+//    @PostMapping("/validateDuplicateMemberId")
+//    @ResponseBody
+//    public int idAjax(@RequestParam String userId){
+//        Member member = new Member();
+//        member.setUserId(userId);
+//        return memberService.validateDuplicateMember(member);
+//    }
+
+    @PostMapping("/validateDuplicateMemberId")
     @ResponseBody
     public int idAjax(@RequestParam String userId){
-        Member member = new Member();
-        member.setUserId(userId);
-        return memberService.validateDuplicateMember(member);
+        return memberService.validateDuplicateMember(userId);
     }
+
     @PostMapping("/ajaxPwUrl")
     @ResponseBody
-    public int pwAjax(@RequestParam String userPw, boolean pwFlag) {
+    public int pwAjax(@RequestParam String password, boolean pwFlag) {
         if(pwFlag){
             return 1;
         } else return 0;

@@ -11,20 +11,20 @@
 <div class="include_wrap" data-include-path="header.html"></div>
 <div class="wrap">
     <h1>회원가입</h1>
-    <form name="joinform" action="/newMember" method="post">
+    <form name="joinForm" action="/newMember" method="post">
         <p>
             <input type="text" id="userId" name="userId" autocomplete="off" required>
             <label for="userId"><span>아이디</span></label>
             <span class="error_next_box" id="idMsg" style="display:none" aria-live="assertive"></span>
         </p>
         <p>
-            <input type="password" id="userPw" name="userPw" autocomplete="off" required>
-            <label for="userPw"><span>비밀번호</span></label>
+            <input type="password" id="password" name="password" autocomplete="off" required>
+            <label for="password"><span>비밀번호</span></label>
             <span class="error_next_box" id="pwMsg" style="display:none" aria-live="assertive">영문, 숫자, 특수문자를 포함한 8~16문자</span>
         </p>
         <p>
-            <input type="text" id="name" name="name" autocomplete="off" required>
-            <label for="name"><span>이름</span></label>
+            <input type="text" id="username" name="username" autocomplete="off" required>
+            <label for="username"><span>이름</span></label>
             <span class="error_next_box" id="nameMsg" style="display:none" aria-live="assertive">한글 2~6문자</span>
         </p>
         <button class="btn first" type="button" onClick="emptyCheck()"><span>등록하기</span></button>
@@ -91,7 +91,7 @@ function checkId(event) {
     console.log("입력된 id값: " + userId);
 
     $.ajax({
-      url: "/ajaxIdUrl",
+      url: "/validateDuplicateMemberId",
       type: "post",
       data: {
         userId : userId
@@ -117,7 +117,7 @@ function checkId(event) {
     return true;
 }
 
-$("#userPw").blur(function() {
+$("#password").blur(function() {
     pwFlag = false;
     checkPw();
 });
@@ -125,16 +125,16 @@ $("#userPw").blur(function() {
 function checkPw() {
     if(pwFlag) return true;
 
-    var pw = $("#userPw").val();
+    var pw = $("#password").val();
     var oMsg = $("#pwMsg");
-    var oInput = $("#userPw");
+    var oInput = $("#password");
 
     if (pw == "") {
         showErrorMsg(oMsg, "필수 정보입니다.");
         setFocusToInputObject(oInput);
         return false;
     }
-    var pwReg = /^(?=.*[a-zA-z])(?=.*[0-9])(?=.*[$`~!@$!%*#^?&\\(\\)\-_=+]).{8,16}$/;
+    var pwReg = /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[$`~!@%*#^?&()\-_=+]).{8,16}$/;
     if (!pwReg.test(pw)) {
         showErrorMsg(oMsg, "영문자, 숫자, 특수문자를 포함한 8~16자");
         setFocusToInputObject(oInput);
@@ -142,14 +142,14 @@ function checkPw() {
     } else {
         pwFlag = true;
     }
-    let userPw = $('input[name=userPw]').val();
-    console.log(userPw);
+    let password = $('input[name=password]').val();
+    console.log(password);
 
     $.ajax({
         url: "/ajaxPwUrl",
         type: "post",
         data: {
-            userPw: userPw,
+            password: password,
             pwFlag: pwFlag
         },
         dataType: 'json',
@@ -169,7 +169,7 @@ function checkPw() {
     })
     return true;
 }
-$("#name").blur(function() {
+$("#username").blur(function() {
     nameFlag = false;
     checkName();
 });
@@ -177,7 +177,7 @@ $("#name").blur(function() {
 function checkName() {
     if(nameFlag) return true;
 
-    var name = $("#name").val();
+    var name = $("#username").val();
     var oMsg = $("#nameMsg");
     var oInput = $("#name");
 
@@ -187,7 +187,7 @@ function checkName() {
         return false;
     }
 
-    var nameReg = /^[ㄱ-ㅎ|가-힣]{2,6}$/;
+    var nameReg = /^[가-힣]{2,6}$/;
 
     if (!nameReg.test(name)) {
         showErrorMsg(oMsg, "한글 2~6자를 입력하세요.");
@@ -201,15 +201,16 @@ function checkName() {
     }
 }
 function emptyCheck() {
+    var joinForm = document.forms['joinForm'];
     var is_empty = false;
     for(i=0;i<3;i++){
-        if(joinform[i].value == ''){
+        if(joinForm[i].value == ''){
             alert("값을 전부 입력해주세요.");
             return;
         }
     }
     if(idFlag && pwFlag && nameFlag) {
-        document.joinform.submit();
+        joinForm.submit();
         alert("가입 완료");
     } else {
         alert("다시 확인하세요");

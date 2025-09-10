@@ -1,6 +1,5 @@
 package jajo.jajo_ex.controller;
 
-import jajo.jajo_ex.SessionConst;
 import jajo.jajo_ex.domain.Board;
 import jajo.jajo_ex.domain.BoardV2;
 import jajo.jajo_ex.domain.Comment;

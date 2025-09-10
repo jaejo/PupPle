@@ -1,6 +1,7 @@
 package jajo.jajo_ex.repository;
 
 import jajo.jajo_ex.domain.Member;
+import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 import java.util.Optional;
@@ -8,6 +9,7 @@ import java.util.Optional;
 public interface MemberRepository {
     Member save(Member member);
     Optional<Member> findById(Long id);
+    Optional<Member> findByUsername(String username);
 
     Optional<Member> findByUserId(String userId);
 
@@ -22,4 +24,6 @@ public interface MemberRepository {
     Member findById(Member member);
 
     Member isPresentMember(Long id);
+
+    Boolean existsByUsername(String username);
 }
