@@ -48,9 +48,7 @@ public class BoardController {
     }
 
     @GetMapping("/newBoardV2")
-    public String createBoardFormV2(@SessionAttribute(required = false, name="principal") Member principal, Model model,
-                                  @RequestParam(name="boardType") BoardType boardType) {
-        if (principal != null) model.addAttribute("member", principal);
+    public String createBoardFormV2(@RequestParam(name="boardType") BoardType boardType, Model model) {
         model.addAttribute("boardType", boardType);
         return "boards/createBoardFormV2";
     }

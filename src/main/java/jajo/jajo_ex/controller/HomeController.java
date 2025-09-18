@@ -1,6 +1,8 @@
 package jajo.jajo_ex.controller;
 
 import jajo.jajo_ex.domain.Member;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -15,7 +17,7 @@ public class HomeController {
 //        return "home";
 //    }
     @GetMapping("/")
-    public String home() {
+    public String home(HttpServletRequest request) {
         return "home";
     }
 }

@@ -4,6 +4,7 @@
 <head>
     <script src="http://code.jquery.com/jquery-3.5.1.min.js"></script>
     <script th:src="@{/js/loadFooter.js}"></script>
+    <script th:src="@{/js/checkLogin.js}"></script>
     <script th:src="@{/js/logout.js}"></script>
     <meta charset="UTF-8">
 </head>
@@ -38,6 +39,8 @@ const clickLogin = document.getElementById('clickLogin');
 clickLogin.addEventListener('click', (e) => {
     const userId = document.getElementById('userId').value;
     const password = document.getElementById('password').value;
+    console.log(userId);
+    console.log(password);
 
     fetch('/login', {
         method: 'POST',

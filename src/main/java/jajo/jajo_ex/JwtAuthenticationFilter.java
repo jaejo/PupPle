@@ -4,6 +4,7 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.ServletRequest;
 import jakarta.servlet.ServletResponse;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
@@ -34,10 +35,20 @@ public class JwtAuthenticationFilter extends GenericFilterBean {
 
     // Request Header에서 토큰 정보 추출
     private String resolveToken(HttpServletRequest request) {
+        //Authorization 헤더에서 추출
         String bearerToken = request.getHeader("Authorization");
         if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer")) {
             return bearerToken.substring(7);
         }
+
+        if (request.getCookies() != null) {
+            for (Cookie cookie : request.getCookies()) {
+                if ("jwt".equals(cookie.getName())) {  // 쿠키 이름 "jwt"로 가정
+                    return cookie.getValue();
+                }
+            }
+        }
+
         return null;
     }
 }

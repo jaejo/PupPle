@@ -4,14 +4,16 @@
 <head>
     <script src="http://code.jquery.com/jquery-3.5.1.min.js"></script>
     <script th:src="@{/js/loadFooter.js}"></script>
+    <script th:src="@{/js/checkLogin.js}"></script>
     <script th:src="@{/js/logout.js}"></script>
     <meta charset="UTF-8">
 </head>
 <body>
 <div class="include_wrap" data-include-path="header.html"></div>
-<div th:if="${member != null}">
-    <input type="hidden" id="loginUser" th:value="${member.getUserId()}"></div>
-</div>
+<!--<div th:if="${member != null}">-->
+<!--    <input type="hidden" id="loginUser" th:value="${member.getUserId()}"></div>-->
+<!--</div>-->
+<div id="container"></div>
 <input type="hidden" name="member" th:value="${member}">
 <div th:if="!${#lists.isEmpty(boards)}">
 <!--    <div th:if="${#strings.equals(boardType, 'free')}">-->
@@ -131,9 +133,25 @@ function createBoard(boardType) {
     location.replace(url);
 }
 
+<!--function createBoardV2(boardType) {-->
+<!--    var url = "/newBoardV2?boardType=" + boardType;-->
+<!--    location.replace(url);-->
+<!--    window.location.href = "/newBoardV2?boardType=" + boardType;-->
+<!--}-->
+
 function createBoardV2(boardType) {
     var url = "/newBoardV2?boardType=" + boardType;
-    location.replace(url);
+    fetch(url, {
+        method: 'GET',
+        credentials: "include"
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log(data);
+    })
+    .catch(error => {
+        console.error('뷰 로딩 실패:', error);
+    });
 }
 
 </script>

@@ -18,7 +18,4 @@ function includeHtml() {
 
 $(document).ready(function() {
     includeHtml();
-//    var loginUser = document.getElementById('loginUser');
-//    if (loginUser != null) $('#login').hide();
-//    else $('#logout').hide();
 });
