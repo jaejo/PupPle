@@ -105,10 +105,10 @@ public class MemberService {
         return MemberDto.toDto(memberRepository.save(signUpDto.toEntity(encodedPassword, roles)));
     }
 
-    public Member login(String userId, String userPw) {
-        Optional<Member> userInfo = memberRepository.checkLogin(userId, userPw);
-        return userInfo.orElse(null);
-    }
+//    public Member login(String userId, String userPw) {
+//        Optional<Member> userInfo = memberRepository.checkLogin(userId, userPw);
+//        return userInfo.orElse(null);
+//    }
     
 //    public void validateDuplicateMember(Member member) {
 //        memberRepository.findByUserId(member.getUserId())
@@ -121,9 +121,10 @@ public class MemberService {
         return memberRepository.findAll();
     }
 
-    public Optional<Member> findOne(String memberUserId) {
-        return memberRepository.findByUserId(memberUserId);
+    public Member findUserId(String userId) {
+        return memberRepository.findUserId(userId);
     }
+
     @Transactional
     public void update(Member member) {
         Optional<Member> updateUser = memberRepository.findByUserId(member.getUserId());

@@ -217,16 +217,9 @@ b {
 .modal img {
     max-width: 80%;
     max-height: 80%;
-    boarder-radius: 10px;
+    border-radius: 10px;
 }
 /* enlargeImage End */
-
-/* .ctrl_btn {
-    border : 1px solid black;
-    margin : 1px;
-    padding : 10px;
-    text-align: center;
-} */
 
 .ctrl_btn {
     border : 1px solid black;
@@ -265,7 +258,6 @@ b {
 
 .search_child {
     display : flex;
-    /* 바깥 div에 설정 */
     justify-content : center;
     align-items: center;
 }
@@ -325,29 +317,6 @@ b {
     display: block;
     clear: both;
 }
-/*
-.boardContent textarea {
-    width: 75%;
-    height : 100%;
-    padding-left : 20px;
-    font-family : Ubuntu;
-}
-*/
-/*
-.images {
-    width : 75%;
-    max-width : 75%;
-    height : 200px;
-    margin : 0 auto;
-    display : flex;
-    flex-direction : row;
-    flex-flow : wrap;
-    justify-content : flex-start;
-    align-items : center;
-    border : 1px solid black;
-    margin-bottom : 10px;
-}
-*/
 
 /*updateBoard */
 .image_area {
@@ -605,7 +574,7 @@ tr {
 
 .inner {
   width: 100%;
-  height: 128px
+  height: 128px;
   margin: 64px auto;
   border-radius: 8px;
   font-size: 16px;
@@ -663,24 +632,6 @@ tr {
   transform: scale(1.05);
 }
 
-/*
-.updateImages {
-   display: grid;
-   grid-template-columns: repeat(6, 1fr);
-   gap: 16px;
-   padding: 16px;
-   margin-bottom: 16px;
-   border-radius: 8px;
-   align-items: center;
-   background-color: var(--bgColor);
-   height: 200px;
-}
-*/
-/*
-.imageDetail.embed-img {
-    display: none;
-}
-*/
 .embed-img {
   width: 100%;
   height : 100%;
@@ -702,23 +653,6 @@ tr {
     width : 75%;
     text-align: center;
 }
-/*
-.updateImg {
-    width: clamp(50%, 150px, 70%);
-    border-top: dashed 1px gray;
-    margin: 0 auto;
-    display: flex;
-    flex-direction: column;
-    text-align: center;
-}
-
-.updateImg label {
-    padding-top: 10px;
-    padding-bottom: 10px;
-    color: red;
-    font-size: 20px;
-}
-*/
 
 /* createBoardFormV2 */
 

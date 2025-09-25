@@ -6,6 +6,7 @@ import jajo.jajo_ex.domain.Member;
 import lombok.Builder;
 import lombok.Getter;
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 @Getter
 @Builder

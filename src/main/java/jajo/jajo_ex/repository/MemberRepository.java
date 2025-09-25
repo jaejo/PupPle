@@ -13,7 +13,8 @@ public interface MemberRepository {
 
     Optional<Member> findByUserId(String userId);
 
-    Optional<Member> checkLogin(String userId, String userPw);
+    Member findUserId(String userId);
+//    Optional<Member> checkLogin(String userId, String userPw);
 
     Optional<Member> findByName(String userId, String name);
 

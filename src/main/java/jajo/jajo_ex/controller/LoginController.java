@@ -53,9 +53,9 @@ public class LoginController {
 //            String encodedValue = URLEncoder.encode(jwtTokenJson, StandardCharsets.UTF_8);
             Cookie cookie = new Cookie("jwt", jwtToken.getAccessToken());
             cookie.setHttpOnly(true);
-            cookie.setSecure(false);
+            cookie.setSecure(true);
             cookie.setPath("/");
-            cookie.setMaxAge(60 * 30);
+            cookie.setMaxAge(60 * 60);
             httpResponse.addCookie(cookie);
         }
         response.put("jwtToken", jwtToken);

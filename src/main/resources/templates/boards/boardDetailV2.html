@@ -5,7 +5,7 @@
 <head>
     <meta charset="UTF-8">
     <script src="http://code.jquery.com/jquery-3.5.1.min.js"></script>
-    <script th:src="@{/js/loadFooter.js}"></script>
+    <script th:src="@{/js/loadHeader.js}"></script>
     <script th:src="@{/js/checkLogin.js}"></script>
     <script th:src="@{/js/enlargeImage.js}"></script>
     <script th:src="@{/js/logout.js}"></script>
@@ -19,6 +19,11 @@
 </head>
 <body>
 <div class="include_wrap" data-include-path="header.html"></div>
+
+<input type="hidden" id="boardUser" th:value="${board.member.getUserId()}">
+<input type="hidden" id="boardNo" th:value="${board.getNo()}">
+<input type="hidden" id="boardType" th:value="${boardType}">
+
 <div class="good_content">
     <div class="good_content_child">
         <div class="good_content_user">
@@ -56,16 +61,8 @@
         </script>
     </div>
 </div>
-<!--    <div th:each="files : ${boardFile}">-->
-<!--        <div class="images" th:if="${files.fileName != ''}">-->
-<!--            <div th:each="file : ${#strings.setSplit(files.fileName, ',')}">-->
-<!--                <div class="imageDetail" th:if="${#strings.trim(file) != ''}">-->
-<!--                    <img th:src="@{|/uploadImage/${boardType}/${#strings.trim(file)}|}" class="clickable-image" width="158" height="200" alt="없음" onclick="openModal(this)">-->
-<!--                </div>-->
-<!--            </div>-->
-<!--        </div>-->
-<!--    </div>-->
-<div class="ctrl_btn" id="ctrl_btn">
+
+<div class="ctrl_btn" id="ctrl_btn" style="display: none;">
     <button class="ctrl_ModifyBtn" id="modify_btn">수정하기</button>
     <button class="ctrl_RemoveBtn" type="button" id="deleteFormAjax" onclick="deleteForm();">게시글 삭제</button>
 </div>
@@ -73,12 +70,6 @@
 <div id="imageModal" class="modal" onclick="closeModal()">
     <img id="modalImage" />
 </div>
-
-<input type="hidden" id="boardUser" th:value="${board.member.getUserId()}">
-<input type="hidden" id="boardNo" th:value="${board.getNo()}">
-<input type="hidden" id="loginUser" th:value="${member.getUserId()}">
-<input type="hidden" id="loginId" th:value="${member.getId()}">
-<input type="hidden" id="boardType" th:value="${boardType}">
 
 <div class="comment" th:if="!${#lists.isEmpty(comments)}">
     <div class="comment_label"><label><h2>댓글</h2></label></div>
@@ -97,16 +88,15 @@
                 <td th:text="${comment.author}"></td>
                 <td th:text="${#temporals.format(comment.createdAt, 'yyyy-MM-dd HH:mm')}"></td>
                 <td>
-<!--                    <h3 th:onclick="createReply([[${comment.id}]]);">└ 리플</h3>-->
                     <h3 th:onclick="createReplyFocus([[${comment.id}]]);">└ 리플</h3>
                 </td>
-                <div th:if="${comment.author == member.getUserId()}">
-                    <td>
-<!--                        <button id="updateComment_btn" th:onclick="updateComment([[${comment.id}]]);">수정</button>-->
+                <td>
+                    <div class="checkMyComment" th:data-author-id="${comment.author}" style="display: none;">
                         <button id="updateComment_btn" th:onclick="updateCommentFocus([[${comment.id}]]);">수정</button>
                         <button id="deleteComment_btn" th:onclick="deleteComment([[${comment.id}]]);">삭제</button>
-                    </td>
-                </div>
+                    </div>
+                </td>
+
             </tr>
             <div th:if="${comment.children != null}">
                 <div th:each="child : ${comment.children}">
@@ -115,7 +105,7 @@
                         <td th:text="${child.author}"></td>
                         <td th:text="${#temporals.format(child.createdAt, 'yyyy-MM-dd HH:mm')}"></td>
                         <td>
-                            <div th:if="${child.author == member.getUserId()}">
+                            <div class="checkChildComment" th:data-author-child-id="${child.author}" style="display: none;">
                                 <button id="deleteReply_btn" th:onclick="deleteComment([[${child.id}]])">리플삭제</button>
                             </div>
                         </td>
@@ -151,16 +141,28 @@
 </html>
 <script>
 var boardUser = $('input[id=boardUser]').val();
-var loginUser = $('input[id=loginUser]').val();
-var loginId = $('input[id=loginId]').val();
 var boardNo = $('input[id=boardNo]').val();
-
 
 $("#update").hide();
 $("#reply").hide();
 
-if(loginUser != boardUser) {
-    $("#ctrl_btn").hide();
+<!-- 게시판 글쓴이와 로그인된 아이디가 다를 경우 게시글 수정, 삭제 hide -->
+async function hideBtn() {
+    const ctrlBtn = document.getElementById('ctrl_btn');
+
+    if(loginUser === boardUser) {
+        $("#ctrl_btn").show();
+    }
+
+    document.querySelectorAll('.checkMyComment').forEach(el => {
+        const commentAuthor = el.getAttribute('data-author-id');
+        if(loginUser === commentAuthor) el.style.display = 'block';
+    });
+
+    document.querySelectorAll('.checkChildComment').forEach(el => {
+        const commentAuthorChild = el.getAttribute("data-author-child-id");
+        if(loginUser === commentAuthorChild) el.style.display = 'block';
+    });
 }
 
 const modify_btn = document.getElementById('modify_btn');
@@ -203,26 +205,24 @@ function deleteForm() {
 }
 function create() {
     var content = document.getElementById('content').value;
-    console.log(content);
-    let data = {
-        memberId : loginId,
+    let info = {
+        userId : loginUser,
         boardNo : boardNo,
         content : content
     };
-    $.ajax({
-        type: 'post',
-        url: '/createComment',
-        data: JSON.stringify(data),
-        dataType: "json",
-        contentType: 'application/json; charset=utf-8',
-        success : function(rest) {
-            console.log("댓글이 등록되었습니다.");
-            location.replace("");
-        }, error : function(error) {
-            console.log("통신 실패");
-        }
-
-    });
+    fetch('/createComment', {
+    method: 'POST',
+    headers: {
+        'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(info)
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log("댓글이 등록되었습니다.");
+        location.replace("");
+    })
+    .catch(error => console.error('에러 발생:', error));
 }
 var replyParentId = 0
 
@@ -236,23 +236,37 @@ function createReply() {
 
     let data = {
         parentId : replyParentId,
-        memberId : loginId,
+        userId : loginUser,
         boardNo : boardNo,
         content : content
     };
-    $.ajax({
-        type: 'post',
-        url: '/createComment',
-        data: JSON.stringify(data),
-        dataType: "json",
-        contentType: 'application/json; charset=utf-8',
-        success : function(rest) {
-            console.log("리플이 등록되었습니다.");
-            location.replace("");
-        }, error : function(error) {
-            console.log("통신 실패");
-        }
-    });
+
+<!--    $.ajax({-->
+<!--        type: 'post',-->
+<!--        url: '/createComment',-->
+<!--        data: JSON.stringify(data),-->
+<!--        dataType: "json",-->
+<!--        contentType: 'application/json; charset=utf-8',-->
+<!--        success : function(rest) {-->
+<!--            console.log("리플이 등록되었습니다.");-->
+<!--            location.replace("");-->
+<!--        }, error : function(error) {-->
+<!--            console.log("통신 실패");-->
+<!--        }-->
+<!--    });-->
+    fetch('/createComment', {
+    method: 'POST',
+    headers: {
+        'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(data)
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log("리플이 등록되었습니다.");
+        location.replace("");
+    })
+    .catch(error => console.error('에러 발생:', error));
 }
 var updateCommentId = 0;
 

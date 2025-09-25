@@ -39,8 +39,8 @@ public class CommentController {
         this.memberService = memberService;
     }
 
-    @ResponseBody
     @PostMapping("/createComment")
+    @ResponseBody
     public ResponseDto<?> create(@RequestBody CommentRequestDto requestDto, HttpServletRequest request) {
         System.out.println("통신 성공");
         createComment(requestDto, request);
@@ -49,7 +49,8 @@ public class CommentController {
 
     @Transactional
     public ResponseDto<?> createComment(CommentRequestDto requestDto, HttpServletRequest request) {
-        Member member = memberService.isPresentMember(requestDto.getMemberId());
+        Member findMemberOne = memberService.findUserId(requestDto.getUserId());
+        Member member = memberService.isPresentMember(findMemberOne.getId());
         BoardV2 board = boardServiceV2.isPresentBoard(requestDto.getBoardNo());
 
         if (null == board) {
@@ -72,6 +73,7 @@ public class CommentController {
                 .boardV2(board)
                 .content(requestDto.getContent())
                 .build();
+
         if (parent != null) {
             comment.updateParent(parent);
         }

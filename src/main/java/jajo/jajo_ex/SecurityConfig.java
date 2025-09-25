@@ -32,17 +32,19 @@ public class SecurityConfig {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
                         // 해당 API에 대해서는 모든 요청을 허가
-                        .requestMatchers("/", "/header.html", "/hello.html", "/css/**", "/js/**", "/images/**").permitAll()
+                        .requestMatchers("/", "/header.html", "/css/**", "/js/**", "/images/**", "/uploadImage/**").permitAll()
+                        // -게시판 API-
                         .requestMatchers("/boards").permitAll()
+
+                        //로그인, (아이디 중복, 비밀번호 정규식 확인 => ajax)
                         .requestMatchers("/login", "/validateDuplicateMemberId", "/ajaxPwUrl").permitAll()
                         .requestMatchers("/newMember").permitAll()
 
-                        .requestMatchers("/member1/sign-in").permitAll()
-                        .requestMatchers("/member1/sign-up").permitAll()
+                        //로그인 여부 확인 API
                         .requestMatchers("/auth/**").permitAll()
-                        // USER 권한이 있어야 요청할 수 있음
-                        .requestMatchers("/members/test").hasRole("USER")
-                        .requestMatchers("/newBoardV2").hasRole("USER")
+
+                        .requestMatchers("/newBoardV2", "/detailV2", "/recommend", "/deleteForm", "/updateBoardV2", "/createComment").hasRole("USER")
+
 
                         // 이 밖에 모든 요청에 대해서 인증을 필요로 한다는 설정
                         .anyRequest().authenticated()

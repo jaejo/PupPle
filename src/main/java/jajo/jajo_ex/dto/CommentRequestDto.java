@@ -17,6 +17,7 @@ public class CommentRequestDto {
     private String author;
     private Board board;
     private Long memberId;
+    private String userId;
     private Long parentId;
     private Long boardNo;
     private LocalDateTime createdAt;

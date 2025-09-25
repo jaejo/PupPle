@@ -1,30 +1,24 @@
 package jajo.jajo_ex.controller;
 
-import jajo.jajo_ex.BoardType;
-import jajo.jajo_ex.domain.Board;
 import jajo.jajo_ex.domain.BoardFile;
 import jajo.jajo_ex.domain.BoardV2;
 import jajo.jajo_ex.domain.Member;
-import jajo.jajo_ex.dto.BoardRequestDto;
-import jajo.jajo_ex.dto.PageDto;
 import jajo.jajo_ex.dto.QuillDataDTO;
 import jajo.jajo_ex.dto.ResponseDto;
 import jajo.jajo_ex.service.BoardFileService;
-import jajo.jajo_ex.service.BoardService;
 import jajo.jajo_ex.service.BoardServiceV2;
 import jajo.jajo_ex.service.MemberService;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.view.RedirectView;
 
 import java.io.File;
 import java.io.IOException;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
-import java.util.regex.Pattern;
 
 @RestController
 public class BoardControllerV2 {
@@ -86,13 +80,10 @@ public class BoardControllerV2 {
 
 
     @PostMapping("/newBoardV2")
-    public ResponseEntity<?> saveBoard(@SessionAttribute(required=false, name="principal") Member principal, Model model,
-                                       @RequestPart(value="info") QuillDataDTO quillData,
+    public ResponseEntity<?> saveBoard(@RequestPart(value="info") QuillDataDTO quillData,
                                        @RequestPart(value="thumbnail", required =false) MultipartFile thumbnail,
-                                       @RequestPart(value="file", required =false) MultipartFile[] file) throws IOException {
-        if (principal != null) model.addAttribute("member", principal);
-        Member member = memberService.findById(principal);
-
+                                       @RequestPart(value="file", required =false) MultipartFile[] file,
+                                       Authentication authentication) throws IOException {
         String allFile = "";
         String thumbnail_img = "";
 
@@ -125,6 +116,7 @@ public class BoardControllerV2 {
             delta = base64ToUrl(delta, imageUrls);
         }
 
+        Member member = memberService.findUserId(authentication.getName());
 
         BoardV2 board = BoardV2.builder()
                 .member(member)
@@ -189,10 +181,8 @@ public class BoardControllerV2 {
 
     @PostMapping("/updateBoardV2")
     @ResponseBody
-    public Map<String, Object> updateBoard(@SessionAttribute(required=false, name="principal") Member principal, Model model,
+    public Map<String, Object> updateBoard(Model model,
                                       @RequestBody QuillDataDTO quillDataDto) {
-        if (principal != null) model.addAttribute("member", principal);
-        Member member = memberService.findById(principal);
         Long no = quillDataDto.getNo();
         String boardType = "";
         boardType += quillDataDto.getBoardType();
@@ -208,13 +198,9 @@ public class BoardControllerV2 {
 
     @PostMapping("/updateQuill")
     @ResponseBody
-    public Map<String, Object> updateQuill(@SessionAttribute(required=false, name="principal") Member principal, Model model,
-                                           @RequestPart(value="info") QuillDataDTO quillData,
+    public Map<String, Object> updateQuill(@RequestPart(value="info") QuillDataDTO quillData,
                                            @RequestPart(value="thumbnail", required =false) MultipartFile thumbnail,
                                            @RequestPart(value="file", required =false) MultipartFile[] file) throws IOException {
-        if (principal != null) model.addAttribute("member", principal);
-        Member member = memberService.findById(principal);
-
         String allFile = "";
         String thumbnail_img = "";
 

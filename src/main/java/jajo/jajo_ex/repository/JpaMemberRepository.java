@@ -2,7 +2,10 @@ package jajo.jajo_ex.repository;
 
 import jajo.jajo_ex.domain.Member;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.NoResultException;
 import jakarta.transaction.Transactional;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 import java.util.Optional;
@@ -44,13 +47,24 @@ public class JpaMemberRepository implements MemberRepository {
     }
 
     @Override
-    public Optional<Member> checkLogin(String userId, String userPw) {
-        List<Member> result = em.createQuery("select m from Member m where m.userId = :userId and m.userPw = :userPw", Member.class)
-                .setParameter("userId", userId)
-                .setParameter("userPw", userPw)
-                .getResultList();
-        return result.stream().findAny();
+    public Member findUserId(String userId) {
+        try {
+            return em.createQuery("select m from Member m where m.userId = :userId", Member.class)
+                    .setParameter("userId", userId)
+                    .getSingleResult();
+        } catch(NoResultException e) {
+            return null;
+        }
     }
+
+//    @Override
+//    public Optional<Member> checkLogin(String userId, String userPw) {
+//        List<Member> result = em.createQuery("select m from Member m where m.userId = :userId and m.userPw = :userPw", Member.class)
+//                .setParameter("userId", userId)
+//                .setParameter("userPw", userPw)
+//                .getResultList();
+//        return result.stream().findAny();
+//    }
     // 이름 중복이 있기 때문에 아이디와 이름 같이 조회
     @Override
     public Optional<Member> findByName(String userId, String name) {
@@ -94,5 +108,4 @@ public class JpaMemberRepository implements MemberRepository {
                 .getSingleResult();
         return count > 0;
     }
-
 }

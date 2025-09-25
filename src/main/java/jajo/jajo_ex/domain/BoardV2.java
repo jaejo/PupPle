@@ -4,7 +4,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jajo.jajo_ex.BoardType;
 import jajo.jajo_ex.Timestamped;
-import jajo.jajo_ex.dto.QuillDataDTO;
 import jakarta.persistence.*;
 import lombok.*;
 
